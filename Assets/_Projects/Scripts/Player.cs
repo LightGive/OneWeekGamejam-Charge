@@ -7,21 +7,26 @@ namespace OneWeekGamejam.Charge
 {
 	public class Player : MonoBehaviour
 	{
-		[SerializeField, Range(0.01f, 10.0f)] float _maxTime = 3.0f;
 		const string AnimParamDamage = "Damage";
 		const string AnimParamNormal = "Normal";
 		const int MaxHitpoint = 3;
 		const int StartChageLevel = 2;
 		const int MaxChageLevel = 4;
+
+		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] Animation _anim = null;
+		[SerializeField, Range(0.01f, 10.0f)] float _chargeTimeOnLevel = 1.0f;
 		[SerializeField] float _moveSpeed = 1.0f;
 		[SerializeField] float _stickAngleThresholdStart = 0.5f;
 		[SerializeField] float _stickAngleThresholdEnd = 0.2f;
+		[SerializeField] float _invisibleTime = 4.0f;
+
+		int _chargeLevelMax = StartChageLevel;
+		int _hp = MaxHitpoint;
 		bool _isInvisible = false;
 		bool _isCharge = false;
-		float _charge = 0.0f;
-		float _chargeMax = 1.0f;
 		float _invisibleTimeCnt = 0.0f;
+		float _chargeTimeCnt = 0.0f;
 		Vector3 _vec = Vector3.zero;
 		Vector2 _screenCenter = Vector2.zero;
 
@@ -32,11 +37,9 @@ namespace OneWeekGamejam.Charge
 		private void Update()
 		{
 			transform.position += _vec * _moveSpeed * Time.deltaTime;
-
-
 			if (_isCharge)
 			{
-				_charge += Time.deltaTime;
+				_chargeTimeCnt = Mathf.Clamp(_chargeTimeCnt + Time.deltaTime, 0.0f, _chargeLevelMax * _chargeTimeOnLevel);
 			}
 			CheckInvisible();
 		}
@@ -95,7 +98,7 @@ namespace OneWeekGamejam.Charge
 		}
 
 		/// <summary>
-		/// ï¿½Gï¿½ï¿½Gï¿½ÌUï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		/// “G‚â“G‚ÌUŒ‚‚ª“–‚½‚Á‚½
 		/// </summary>
 		void Damage()
 		{
@@ -105,7 +108,7 @@ namespace OneWeekGamejam.Charge
 		}
 
 		/// <summary>
-		/// ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½N
+		/// –³“G‰ğœƒ`ƒFƒbƒN
 		/// </summary>
 		void CheckInvisible()
 		{
@@ -133,6 +136,8 @@ namespace OneWeekGamejam.Charge
 		void ReleaseCharge()
 		{
 			_isCharge = false;
+			var level = Mathf.FloorToInt(_chargeTimeCnt / _chargeTimeOnLevel);
+			_bulletGenerator.GeneratePlayerBullet(level, 50.0f, transform.up, transform.position);
 		}
 	}
 }
