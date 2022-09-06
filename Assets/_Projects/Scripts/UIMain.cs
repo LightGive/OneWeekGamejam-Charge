@@ -12,14 +12,16 @@ namespace OneWeekGamejam.Charge
         [SerializeField] Sprite _hpFull = null;
         [SerializeField] Sprite _hpEmpty = null;
         [SerializeField] Player _player = null;
-
+		[SerializeField] UIChargeLevel _UIChargeLevel = null;
 
 		protected override void OnInit()
 		{
 			base.OnInit();
 			_player.HP.OnHitpointChanged.AddListener(OnHitpointChanged);
+			_player.Charge.OnChargeChanged.AddListener(_UIChargeLevel.OnChargeChanged);
+			_player.Charge.OnChargeLevelChanged.AddListener(_UIChargeLevel.OnChargeLevelChanged);
+			_player.Charge.OnChargeLevelMaxChanged.AddListener(_UIChargeLevel.OnChargeLevelMaxChanged);
 		}
-
 
 		void OnHitpointChanged(int max,int current)
 		{

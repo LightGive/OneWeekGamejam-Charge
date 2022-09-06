@@ -49,30 +49,90 @@ namespace OneWeekGamejam.Charge
 				OnHitpointChanged?.Invoke(Max, Current);
 			}
 		}
+		[System.Serializable]
+		public class ChargeInfo
+		{
+			public class OnChargeChangeEvent : UnityEvent<bool> { }
+			public class OnChargeLevelChangeEvent : UnityEvent<int> { }
+			public class OnChargeLevelMaxChangeEvent : UnityEvent<int> { }
+			int _chargeLevel = 0;
+			int _chargeLevelMax = 0;
+			[field: SerializeField] public float ChargeTimeOneLevel { get; private set; } = 0.5f;
+			public float ChargeTimeCnt { get; private set; } = 0.0f;
+			public int ChargeLevelMax 
+			{ 
+				get => _chargeLevelMax;
+				private set 
+				{
+					if(_chargeLevelMax == value) { return; }
+					_chargeLevelMax = value;
+					OnChargeLevelMaxChanged?.Invoke(value);
+				} 
+			}
+			public int ChargeLevel 
+			{
+				get => _chargeLevel; 
+				private set
+				{
+					if(_chargeLevel == value) { return; }
+					_chargeLevel = value;
+					OnChargeLevelChanged?.Invoke(value);
+				}
+			}
+			public OnChargeChangeEvent OnChargeChanged { get; private set; } = null;
+			public OnChargeLevelChangeEvent OnChargeLevelChanged { get; private set; } = null;
+			public OnChargeLevelMaxChangeEvent OnChargeLevelMaxChanged { get; private set; } = null;
+			public ChargeInfo()
+			{
+				ChargeTimeCnt = 0.0f;
+				ChargeLevel = 0;
+				ChargeLevelMax = 0;
+				OnChargeChanged = new OnChargeChangeEvent();
+				OnChargeLevelChanged = new OnChargeLevelChangeEvent();
+				OnChargeLevelMaxChanged = new OnChargeLevelMaxChangeEvent();
+			}
+
+			public void SetChargeMaxLevel(int chargeLevelMax)
+			{
+				ChargeLevelMax = chargeLevelMax;
+			}
+
+			public void ChargeTimeCount()
+			{
+				ChargeTimeCnt = Mathf.Clamp(ChargeTimeCnt + Time.deltaTime, 0.0f, ChargeLevelMax * ChargeTimeOneLevel);
+				ChargeLevel = Mathf.FloorToInt(ChargeTimeCnt / ChargeTimeOneLevel);
+			}
+
+			public void ResetChargeTime()
+			{
+				ChargeTimeCnt = 0.0f;
+			}
+		}
 
 		const string AnimParamDamage = "Damage";
 		const string AnimParamNormal = "Normal";
 		const int MaxHitpoint = 4;
-		const int MaxChageLevel = 4;
+		const int MaxChageMaxLevel = 4;
 		const int StartHitPoint = 3;
-		const int StartChageLevel = 2;
+		const int StartChageMaxLevel = 2;
 
 		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] Animation _anim = null;
-		[SerializeField, Range(0.01f, 10.0f)] float _chargeTimeOnLevel = 1.0f;
 		[SerializeField] float _moveSpeed = 1.0f;
 		[SerializeField] float _stickAngleThresholdStart = 0.5f;
 		[SerializeField] float _stickAngleThresholdEnd = 0.2f;
 		[SerializeField] float _invisibleTime = 4.0f;
-		public HitPoint HP { get; private set; } = new HitPoint(StartHitPoint, StartHitPoint);
 
-		int _chargeLevelMax = StartChageLevel;
 		bool _isInvisible = false;
 		bool _isCharge = false;
+		float _exp = 0.0f;
 		float _invisibleTimeCnt = 0.0f;
-		float _chargeTimeCnt = 0.0f;
+		int _chargeLevel = 0;
+
 		Vector3 _vec = Vector3.zero;
 		Vector2 _screenCenter = Vector2.zero;
+		public HitPoint HP { get; private set; } = new HitPoint(StartHitPoint, StartHitPoint);
+		[field: SerializeField] public ChargeInfo Charge { get; private set; } = new ChargeInfo();
 
 		private void Awake()
 		{
@@ -81,6 +141,7 @@ namespace OneWeekGamejam.Charge
 		void Start()
 		{
 			HP.SetMax(StartHitPoint, false);
+			Charge.SetChargeMaxLevel(StartChageMaxLevel);
 		}
 
 		private void Update()
@@ -88,7 +149,7 @@ namespace OneWeekGamejam.Charge
 			transform.position += _vec * _moveSpeed * Time.deltaTime;
 			if (_isCharge)
 			{
-				_chargeTimeCnt = Mathf.Clamp(_chargeTimeCnt + Time.deltaTime, 0.0f, _chargeLevelMax * _chargeTimeOnLevel);
+				Charge.ChargeTimeCount();
 			}
 			CheckInvisible();
 		}
@@ -182,15 +243,16 @@ namespace OneWeekGamejam.Charge
 		void StartCharge()
 		{
 			_isCharge = true;
+			Charge.OnChargeChanged.Invoke(true);
 		}
 
 		void ReleaseCharge()
 		{
 			_isCharge = false;
-			var level = Mathf.FloorToInt(_chargeTimeCnt / _chargeTimeOnLevel);
-			_chargeTimeCnt = 0.0f;
+			var level = Charge.ChargeLevel;
+			Charge.OnChargeChanged.Invoke(false);
+			Charge.ResetChargeTime();
 			if (level == 0) { return; }
-
 			_bulletGenerator.GeneratePlayerBullet(level, 50.0f, transform.up, transform.position);
 		}
 	}
