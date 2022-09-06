@@ -18,10 +18,9 @@ namespace OneWeekGamejam.Charge
         void Awake()
         {
             _activeEnemyList = new List<Enemy>();
-
         }
 
-        void Update()
+		void Update()
         {
             _generateTimeCnt += Time.deltaTime;
             if (_generateTimeCnt > _generateInterval)
@@ -41,6 +40,12 @@ namespace OneWeekGamejam.Charge
             e.SetActivate(p, _player);
             _activeEnemyList.Add(e);
             _generateTimeCnt = 0.0f;
+            e.OnHitEvent.AddListener(() =>
+            {
+                _enemyPool.ReleaseEnemy(e);
+                _activeEnemyList.Remove(e);
+                e.OnHitEvent.RemoveAllListeners();
+            });
         }
     }
 }

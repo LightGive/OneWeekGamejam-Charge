@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace OneWeekGamejam.Charge
 {
@@ -9,6 +10,12 @@ namespace OneWeekGamejam.Charge
         [SerializeField] Rigidbody2D _rigid = null;
         [SerializeField] SpriteRenderer _spRenderer = null;
         float _speed = 0.0f;
+        public UnityEvent OnHitEvent { get; private set; } = new UnityEvent();
+
+        void Update()
+		{
+            _rigid.MovePosition((Vector3)_rigid.position + transform.up * _speed * Time.deltaTime);
+        }
 
         public void SetActivate(int level, float speed, float angle, Vector3 pos)
         {
@@ -19,9 +26,9 @@ namespace OneWeekGamejam.Charge
             transform.position = pos;
         }
 
-		void Update()
+        public void Hit()
 		{
-            _rigid.MovePosition((Vector3)_rigid.position + transform.up * _speed * Time.deltaTime);
+            OnHitEvent?.Invoke();   
 		}
-	}
+    }
 }

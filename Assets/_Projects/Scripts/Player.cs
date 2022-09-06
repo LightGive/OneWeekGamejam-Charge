@@ -46,6 +46,7 @@ namespace OneWeekGamejam.Charge
 
 		void OnTriggerEnter2D(Collider2D col)
 		{
+			if (col.tag != TagName.Enemy) { return; }
 			Damage();
 		}
 
@@ -137,6 +138,9 @@ namespace OneWeekGamejam.Charge
 		{
 			_isCharge = false;
 			var level = Mathf.FloorToInt(_chargeTimeCnt / _chargeTimeOnLevel);
+			_chargeTimeCnt = 0.0f;
+			if (level == 0) { return; }
+
 			_bulletGenerator.GeneratePlayerBullet(level, 50.0f, transform.up, transform.position);
 		}
 	}

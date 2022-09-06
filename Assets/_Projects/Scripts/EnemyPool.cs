@@ -36,7 +36,7 @@ namespace OneWeekGamejam.Charge
         {
             Destroy(obj);
         }
-        public void ReleaseGameObject(Enemy obj)
+        public void ReleaseEnemy(Enemy obj)
         {
             Pool.Release(obj);
         }

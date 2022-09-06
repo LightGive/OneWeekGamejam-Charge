@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace OneWeekGamejam.Charge
 {
@@ -12,6 +13,8 @@ namespace OneWeekGamejam.Charge
         Transform _target = null;
         float _angleCurrent = 0.0f;
         float _angleVelocity = 0.0f;
+        public UnityEvent OnHitEvent { get; private set; } = new UnityEvent();
+
         public void SetActivate(Vector3 generatePos, Player player)
         {
             _target = player.transform;
@@ -38,5 +41,26 @@ namespace OneWeekGamejam.Charge
             var v = (_target.position - transform.position).normalized;
             return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg + 270.0f;
         }
+
+		void OnTriggerEnter2D(Collider2D col)
+		{
+            if (col.tag != TagName.PlayerBullet) { return; }
+            var bullet = col.transform.GetComponent<Bullet>();
+            if (bullet == null) 
+            {
+                Debug.LogError("Bulletがアタッチされて無い");
+                return; 
+            }
+			if (bullet.gameObject.activeSelf)
+			{
+                bullet.Hit();
+            }
+            Damage();
+		}
+
+		public void Damage()
+		{
+            OnHitEvent?.Invoke();
+		}
 	}
 }
