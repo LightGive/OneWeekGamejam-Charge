@@ -2180,8 +2180,8 @@ MonoBehaviour:
   _playerInput: {fileID: 1707348466}
   _anim: {fileID: 1707348465}
   _moveSpeed: 2.5
-  _smoothTimeAngle: 0.01
-  _smoothMaxSpeedAngle: 1000
+  _smoothTimeAngle: 0.2
+  _smoothMaxSpeedAngle: 360
   _stickAngleThresholdStart: 0.5
   _stickAngleThresholdEnd: 0.2
   _invisibleTime: 4
@@ -2238,8 +2238,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _input: {fileID: 2004636538}
-  _stickAngleThresholdStart: 0.701
-  _stickAngleThresholdEnd: 0.476
+  _stickAngleThresholdStart: 0.726
+  _stickAngleThresholdEnd: 0.561
 --- !u!1 &1725065546
 GameObject:
   m_ObjectHideFlags: 0

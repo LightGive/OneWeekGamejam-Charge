@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 
 namespace OneWeekGamejam.Charge
 {
@@ -132,26 +129,22 @@ namespace OneWeekGamejam.Charge
 		float _invisibleTimeCnt = 0.0f;
 		(float target, float current, float velocity) _smoothAngle = (0.0f, 0.0f, 0.0f);
 
-		Vector3 _lookVec = Vector3.zero;
-		Vector3 _vec = Vector3.zero;
-		Vector2 _screenCenter = Vector2.zero;
-		public HitPoint HP { get; private set; } = new HitPoint(StartHitPoint, StartHitPoint);
 		[field: SerializeField] public ChargeInfo Charge { get; private set; } = new ChargeInfo();
+		public HitPoint HP { get; private set; } = new HitPoint(StartHitPoint, StartHitPoint);
 
-		private void Awake()
+		void Awake()
 		{
 			_playerInput.OnAimStart.AddListener(OnAimStart);
 			_playerInput.OnFire.AddListener(OnFire);
-
-			_screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
 		}
+
 		void Start()
 		{
 			HP.SetMax(StartHitPoint, false);
 			Charge.SetChargeMaxLevel(StartChageMaxLevel);
 		}
 
-		private void Update()
+		void Update()
 		{
 			if (_isCharge)
 			{

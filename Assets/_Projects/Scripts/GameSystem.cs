@@ -1,9 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
+using Cinemachine;
+using LightGive.ManagerSystem;
 using UnityEngine;
 using UnityEngine.Events;
-using LightGive.ManagerSystem;
-using Cinemachine;
 
 namespace OneWeekGamejam.Charge
 {
