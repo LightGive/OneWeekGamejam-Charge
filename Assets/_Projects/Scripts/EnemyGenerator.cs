@@ -22,7 +22,7 @@ namespace OneWeekGamejam.Charge
 
 		void Update()
         {
-            _generateTimeCnt += Time.deltaTime;
+            _generateTimeCnt += GameSystem.ObjectDeltaTime;
             if (_generateTimeCnt > _generateInterval)
             {
                 Generate();

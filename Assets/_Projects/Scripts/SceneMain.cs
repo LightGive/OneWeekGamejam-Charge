@@ -9,9 +9,13 @@ namespace OneWeekGamejam.Charge
     {
 		[SerializeField] UIMain _UIMain = null;
 
+
 		void Start()
 		{
 			_UIMain.Show();
+
+
+
 		}
 	}
 }

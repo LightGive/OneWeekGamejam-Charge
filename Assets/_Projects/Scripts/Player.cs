@@ -99,7 +99,7 @@ namespace OneWeekGamejam.Charge
 
 			public void ChargeTimeCount()
 			{
-				ChargeTimeCnt = Mathf.Clamp(ChargeTimeCnt + Time.deltaTime, 0.0f, ChargeLevelMax * ChargeTimeOneLevel);
+				ChargeTimeCnt = Mathf.Clamp(ChargeTimeCnt + GameSystem.ObjectDeltaTime, 0.0f, ChargeLevelMax * ChargeTimeOneLevel);
 				ChargeLevel = Mathf.FloorToInt(ChargeTimeCnt / ChargeTimeOneLevel);
 			}
 
@@ -127,7 +127,6 @@ namespace OneWeekGamejam.Charge
 		bool _isCharge = false;
 		float _exp = 0.0f;
 		float _invisibleTimeCnt = 0.0f;
-		int _chargeLevel = 0;
 
 		Vector3 _vec = Vector3.zero;
 		Vector2 _screenCenter = Vector2.zero;
@@ -146,7 +145,7 @@ namespace OneWeekGamejam.Charge
 
 		private void Update()
 		{
-			transform.position += _vec * _moveSpeed * Time.deltaTime;
+			transform.position += _vec * _moveSpeed * GameSystem.ObjectDeltaTime;
 			if (_isCharge)
 			{
 				Charge.ChargeTimeCount();
@@ -225,7 +224,7 @@ namespace OneWeekGamejam.Charge
 		void CheckInvisible()
 		{
 			if (!_isInvisible) { return; }
-			_invisibleTimeCnt += Time.deltaTime;
+			_invisibleTimeCnt += GameSystem.ObjectDeltaTime;
 			if (_invisibleTimeCnt > _invisibleTime)
 			{
 				_invisibleTimeCnt = 0.0f;
