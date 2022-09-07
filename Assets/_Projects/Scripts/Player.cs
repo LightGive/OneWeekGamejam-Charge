@@ -117,8 +117,11 @@ namespace OneWeekGamejam.Charge
 		const int StartChageMaxLevel = 2;
 
 		[SerializeField] BulletGenerator _bulletGenerator = null;
+		[SerializeField] PlayerInput _playerInput = null;
 		[SerializeField] Animation _anim = null;
 		[SerializeField] float _moveSpeed = 1.0f;
+		[SerializeField] float _smoothTimeAngle = 360.0f;
+		[SerializeField] float _smoothMaxSpeedAngle = 1.0f;
 		[SerializeField] float _stickAngleThresholdStart = 0.5f;
 		[SerializeField] float _stickAngleThresholdEnd = 0.2f;
 		[SerializeField] float _invisibleTime = 4.0f;
@@ -127,7 +130,9 @@ namespace OneWeekGamejam.Charge
 		bool _isCharge = false;
 		float _exp = 0.0f;
 		float _invisibleTimeCnt = 0.0f;
+		(float target, float current, float velocity) _smoothAngle = (0.0f, 0.0f, 0.0f);
 
+		Vector3 _lookVec = Vector3.zero;
 		Vector3 _vec = Vector3.zero;
 		Vector2 _screenCenter = Vector2.zero;
 		public HitPoint HP { get; private set; } = new HitPoint(StartHitPoint, StartHitPoint);
@@ -135,6 +140,9 @@ namespace OneWeekGamejam.Charge
 
 		private void Awake()
 		{
+			_playerInput.OnAimStart.AddListener(OnAimStart);
+			_playerInput.OnFire.AddListener(OnFire);
+
 			_screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
 		}
 		void Start()
@@ -145,11 +153,12 @@ namespace OneWeekGamejam.Charge
 
 		private void Update()
 		{
-			transform.position += _vec * _moveSpeed * GameSystem.ObjectDeltaTime;
 			if (_isCharge)
 			{
 				Charge.ChargeTimeCount();
 			}
+			Move();
+			Aim();
 			CheckInvisible();
 		}
 
@@ -159,52 +168,49 @@ namespace OneWeekGamejam.Charge
 			Damage();
 		}
 
-		public void OnMove(InputAction.CallbackContext context)
+		void Aim()
 		{
-			_vec = context.ReadValue<Vector2>();
-			
+			// deltaTimeに0を設定してSmoothDampAngleを実行すると以下のアサートを吐くため
+			// ポーズしている時は角度を変える処理を通さないように
+			// Assertion failed on expression: 'CompareApproximately(SqrMagnitude(result), 1.0F)'
+			if (GameSystem.ObjectTimeScale <= 0.0f) { return; }
+
+			// 自キャラの向きを変える
+			var vec = _playerInput.VecDir;
+			_smoothAngle.target = Mathf.Atan2(vec.y, vec.x) * Mathf.Rad2Deg - 90.0f;
+			_smoothAngle.current =
+				Mathf.SmoothDampAngle(
+					_smoothAngle.current,
+					_smoothAngle.target,
+					ref _smoothAngle.velocity,
+					_smoothTimeAngle,
+					_smoothMaxSpeedAngle);
+			transform.localRotation = Quaternion.Euler(0.0f, 0.0f, _smoothAngle.current);
 		}
 
-		public void OnLook(InputAction.CallbackContext context)
+		void Move()
 		{
-			var stickVec = context.ReadValue<Vector2>();
-			var stickMag = stickVec.magnitude;
-			if (_isCharge && stickMag <= _stickAngleThresholdEnd)
-			{
-				ReleaseCharge();
-			}
-			else if(!_isCharge && stickVec.magnitude >= _stickAngleThresholdStart)
-			{
-				StartCharge();
-			}
+			transform.position += 
+				_playerInput.VecMove * 
+				_moveSpeed * 
+				GameSystem.ObjectDeltaTime;
 
-			if (_isCharge)
-			{
-				Look(stickVec);
-			}
 		}
 
-		public void OnAim(InputAction.CallbackContext context)
+		void OnAimStart()
 		{
-			if(!_isCharge) { return; }
-			var screenPoint = context.ReadValue<Vector2>();
-			var vec = screenPoint - _screenCenter;
-			Look(vec);
+			_isCharge = true;
+			Charge.OnChargeChanged.Invoke(true);
 		}
 
-		public void OnMouse(InputAction.CallbackContext context)
+		void OnFire()
 		{
-			if (context.performed)
-			{
-				if (context.action.IsPressed())
-				{
-					StartCharge();
-				}
-				else
-				{
-					ReleaseCharge();
-				}
-			}
+			_isCharge = false;
+			var level = Charge.ChargeLevel;
+			Charge.OnChargeChanged.Invoke(false);
+			Charge.ResetChargeTime();
+			if (level == 0) { return; }
+			_bulletGenerator.GeneratePlayerBullet(level, 30.0f, transform.up, transform.position);
 		}
 
 		/// <summary>
@@ -231,28 +237,6 @@ namespace OneWeekGamejam.Charge
 				_isInvisible = false;
 				_anim.Play(AnimParamNormal);
 			}
-		}
-
-		void Look(Vector2 vec)
-		{
-			var angle = Mathf.Atan2(vec.y, vec.x) * Mathf.Rad2Deg - 90.0f;
-			transform.localRotation = Quaternion.Euler(0.0f, 0.0f, angle);
-		}
-
-		void StartCharge()
-		{
-			_isCharge = true;
-			Charge.OnChargeChanged.Invoke(true);
-		}
-
-		void ReleaseCharge()
-		{
-			_isCharge = false;
-			var level = Charge.ChargeLevel;
-			Charge.OnChargeChanged.Invoke(false);
-			Charge.ResetChargeTime();
-			if (level == 0) { return; }
-			_bulletGenerator.GeneratePlayerBullet(level, 50.0f, transform.up, transform.position);
 		}
 	}
 }

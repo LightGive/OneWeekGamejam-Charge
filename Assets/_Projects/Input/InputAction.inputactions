@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "LookAndFire",
+                    "name": "AimStickFire",
                     "type": "Value",
                     "id": "ac2bfb61-c47a-431e-98b7-c39ad455d6ee",
                     "expectedControlType": "Vector2",
@@ -24,7 +24,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Aim",
+                    "name": "AimMouse",
                     "type": "Value",
                     "id": "1d138141-772c-4b95-990a-c371f760984c",
                     "expectedControlType": "Vector2",
@@ -33,7 +33,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MouseFire",
+                    "name": "FireMouse",
                     "type": "Button",
                     "id": "988cb608-f150-4190-839b-7d7e84bc29fb",
                     "expectedControlType": "Button",
@@ -160,7 +160,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "LookAndFire",
+                    "action": "AimStickFire",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -171,7 +171,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard-Mouse",
-                    "action": "Aim",
+                    "action": "AimMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -182,7 +182,7 @@
                     "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "Keyboard-Mouse",
-                    "action": "MouseFire",
+                    "action": "FireMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

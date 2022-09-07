@@ -11,6 +11,7 @@ namespace OneWeekGamejam.Charge
 	{
 		public static float GameSystemDeltaTime => Instance._timeGameSystem.DeltaTime;
 		public static float ObjectDeltaTime => Instance._timeObject.DeltaTime;
+		public static float ObjectTimeScale => Instance._timeObject.TimeScale;
 
 		[SerializeField] CinemachineImpulseSource _cinemachineImpulseSource = null;
 
