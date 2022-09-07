@@ -280,6 +280,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "jp.lightgive.managersystem": {
+      "version": "https://github.com/LightGive/ManagerSystem.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "064a315d6aad2aca277faf22389ee4aec5ef0378"
+    },
     "jp.lightgive.uiutil": {
       "version": "https://github.com/LightGive/UnityUIUtil.git",
       "depth": 0,
