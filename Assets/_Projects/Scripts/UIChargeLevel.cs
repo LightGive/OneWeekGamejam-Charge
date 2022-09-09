@@ -1,16 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
+using LightGive.UIUtil;
 
 namespace OneWeekGamejam
 {
-	public class UIChargeLevel : MonoBehaviour
+	public class UIChargeLevel : UINode
 	{
 		[SerializeField] Image[] _gages = null;
 		[SerializeField] GameObject _chargeUI = null;
 
-		public void OnChargeChanged(bool isStart)
+		protected override void OnShowBefore()
 		{
-			_chargeUI.SetActive(isStart);
+			base.OnShowBefore();
+			_chargeUI.SetActive(false);
+		}
+
+		public void OnChargeChanged(bool isShow)
+		{
+			_chargeUI.SetActive(isShow);
 		}
 
 		public void OnChargeLevelChanged(int value)

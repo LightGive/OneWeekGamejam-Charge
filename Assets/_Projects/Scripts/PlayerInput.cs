@@ -34,6 +34,7 @@ namespace OneWeekGamejam.Charge
 
 		void OnDisable()
 		{
+			if(_input == null) { return; }
 			_input.actions["Move"].performed -= OnMove;
 			_input.actions["Move"].canceled -= OnMove;
 			_input.actions["AimStickFire"].performed -= OnAimStick;

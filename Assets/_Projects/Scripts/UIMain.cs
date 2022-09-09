@@ -23,6 +23,12 @@ namespace OneWeekGamejam.Charge
 			_player.Charge.OnChargeLevelMaxChanged.AddListener(_UIChargeLevel.OnChargeLevelMaxChanged);
 		}
 
+		protected override void OnShowBefore()
+		{
+			base.OnShowAfter();
+			_UIChargeLevel.Show();
+		}
+
 		void OnHitpointChanged(int max,int current)
 		{
 			for(var i = 0; i < _imageHP.Length; i++)

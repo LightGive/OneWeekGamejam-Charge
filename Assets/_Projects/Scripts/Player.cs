@@ -104,6 +104,14 @@ namespace OneWeekGamejam.Charge
 			{
 				ChargeTimeCnt = 0.0f;
 			}
+
+			public void Init(int chargeLevelMax,int chargeLevel)
+			{
+				_chargeLevelMax = chargeLevelMax;
+				OnChargeLevelMaxChanged?.Invoke(chargeLevelMax);
+				_chargeLevel = chargeLevel;
+				OnChargeLevelChanged?.Invoke(chargeLevel);
+			}
 		}
 
 		const string AnimParamDamage = "Damage";
@@ -111,7 +119,7 @@ namespace OneWeekGamejam.Charge
 		const int MaxHitpoint = 4;
 		const int MaxChageMaxLevel = 4;
 		const int StartHitPoint = 3;
-		const int StartChageMaxLevel = 2;
+		const int StartChageMaxLevel = 3;
 
 		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] PlayerInput _playerInput = null;
@@ -141,7 +149,7 @@ namespace OneWeekGamejam.Charge
 		void Start()
 		{
 			HP.SetMax(StartHitPoint, false);
-			Charge.SetChargeMaxLevel(StartChageMaxLevel);
+			Charge.Init(StartChageMaxLevel, 0);
 		}
 
 		void Update()
@@ -203,7 +211,7 @@ namespace OneWeekGamejam.Charge
 			Charge.OnChargeChanged.Invoke(false);
 			Charge.ResetChargeTime();
 			if (level == 0) { return; }
-			_bulletGenerator.GeneratePlayerBullet(level, 30.0f, transform.up, transform.position);
+			_bulletGenerator.GeneratePlayerBullet(level, 1000.0f, transform.up, transform.position);
 		}
 
 		/// <summary>
