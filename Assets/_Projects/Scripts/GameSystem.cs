@@ -11,11 +11,12 @@ namespace OneWeekGamejam.Charge
 		public static float GameSystemDeltaTime => Instance._timeGameSystem.DeltaTime;
 		public static float ObjectDeltaTime => Instance._timeObject.DeltaTime;
 		public static float ObjectTimeScale => Instance._timeObject.TimeScale;
+		public static bool IsStartGame => Instance._isGameStart;
 
 		[SerializeField] CinemachineImpulseSource _cinemachineImpulseSource = null;
-
 		TimeGroup _timeGameSystem = null;
 		TimeGroup _timeObject = null;
+		bool _isGameStart = false;
 
 		void Start()
 		{
@@ -23,11 +24,15 @@ namespace OneWeekGamejam.Charge
 			_timeObject = TimeController.Instance.CreateTimeGroup("Object", _timeGameSystem);
 		}
 
-		public void ShakeCamera(Vector3 vec,float shakeDuration)
+		public void StartGame()
+		{
+			_isGameStart = true;
+		}
+
+		public void ShakeCamera(Vector3 vec,float shakeDuration,float shakePower)
 		{
 			_cinemachineImpulseSource.m_ImpulseDefinition.m_ImpulseDuration = shakeDuration;
-			_cinemachineImpulseSource.GenerateImpulseAt(Vector3.zero, vec);
-
+			_cinemachineImpulseSource.GenerateImpulseAt(Vector3.zero, vec.normalized * shakePower);
 		}
 
 		public void HitStop(float stopTime, UnityAction onResumed = null)

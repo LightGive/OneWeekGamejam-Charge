@@ -121,6 +121,7 @@ namespace OneWeekGamejam.Charge
 		const int StartHitPoint = 3;
 		const int StartChageMaxLevel = 3;
 
+		[SerializeField] SpriteFlusher _spriteFlusher = null;
 		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] PlayerInput _playerInput = null;
 		[SerializeField] Animation _anim = null;
@@ -220,9 +221,27 @@ namespace OneWeekGamejam.Charge
 		void Damage()
 		{
 			if (_isInvisible) { return; }
-			HP.SetCurrent(HP.Current - 1);
-			_anim.Play(AnimParamDamage);
 			_isInvisible = true;
+
+			// カメラ振動
+			var ranRad = Random.value * Mathf.PI * 2.0f;
+			var ranVec = new Vector3(Mathf.Cos(ranRad), Mathf.Sin(ranRad), 0.0f);
+			var cameraShakeDuration = 0.6f;
+			var cameraShakePower = 20;
+			GameSystem.Instance.ShakeCamera(
+				ranVec,
+				cameraShakeDuration,
+				cameraShakePower);
+
+			// 点滅
+			_spriteFlusher.StartFlush(2);
+			
+			// ヒットストップ
+			GameSystem.Instance.HitStop(0.4f, () =>
+			{
+				_anim.Play(AnimParamDamage);
+				HP.SetCurrent(HP.Current - 1);
+			});
 		}
 
 		/// <summary>

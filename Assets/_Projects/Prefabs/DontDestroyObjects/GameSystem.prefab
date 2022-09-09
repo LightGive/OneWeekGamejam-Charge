@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isDontDestroy: 1
   _cinemachineImpulseSource: {fileID: 753784956916413905}
+  _cameraShakePow: 50
 --- !u!114 &753784956916413905
 MonoBehaviour:
   m_ObjectHideFlags: 0

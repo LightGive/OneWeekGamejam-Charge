@@ -20,7 +20,7 @@ namespace OneWeekGamejam.Charge
         public void SetActivate(int level, float speed, float angle, Vector3 pos)
         {
             _speed = speed;
-            var scale = level * 0.1f;
+            var scale = level;
             _spRenderer.transform.localScale = new Vector3(scale, scale, scale);
             transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);
             transform.position = pos;

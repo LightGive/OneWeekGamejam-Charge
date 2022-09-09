@@ -52,6 +52,16 @@ public class LayerName
 
 	public const string @UI = "UI";
 
+
+
+	/// <summary>
+
+	/// return "Postprocess"
+
+ 	/// </summary>
+
+	public const string @Postprocess = "Postprocess";
+
 
 	/// <summary>
 
@@ -67,7 +77,7 @@ public class LayerName
 
 	/// <para>5. "UI"</para>
 
-	/// <para>6. ""</para>
+	/// <para>6. "Postprocess"</para>
 
 	/// <para>7. ""</para>
 
@@ -121,7 +131,7 @@ public class LayerName
 
 	/// </summary>
 
-	public static readonly string[] names = new string[]{"Default","TransparentFX","Ignore Raycast","","Water","UI","","","","","","","","","","","","","","","","","","","","","","","","","",""};
+	public static readonly string[] names = new string[]{"Default","TransparentFX","Ignore Raycast","","Water","UI","Postprocess","","","","","","","","","","","","","","","","","","","","","","","","",""};
 
 }
 

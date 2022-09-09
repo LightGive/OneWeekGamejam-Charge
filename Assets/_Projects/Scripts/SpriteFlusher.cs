@@ -13,7 +13,7 @@ namespace OneWeekGamejam.Charge
         [SerializeField] float _noFlushTime = 0.2f;
         Coroutine _flushCoroutine = null;
 
-        public void ResetFlush()
+		public void ResetFlush()
 		{
             if (_flushCoroutine != null)
             {

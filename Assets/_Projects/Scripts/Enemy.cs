@@ -84,7 +84,7 @@ namespace OneWeekGamejam.Charge
 		{
             var shakePow = 0.2f;
             _spriteFlusher.StartFlush(2);
-            GameSystem.Instance.ShakeCamera(vec * shakePow, 0.1f);
+            GameSystem.Instance.ShakeCamera(vec * shakePow, 0.1f, 50.0f);
             GameSystem.Instance.HitStop(0.1f,()=> 
             {
                 OnHitEvent?.Invoke();

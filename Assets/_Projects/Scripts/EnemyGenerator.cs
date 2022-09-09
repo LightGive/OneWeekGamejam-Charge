@@ -14,6 +14,7 @@ namespace OneWeekGamejam.Charge
         List<Enemy> _activeEnemyList = null;
 
         float _generateTimeCnt = 0.0f;
+        public bool IsStartGenerate { get; private set; } = false;
 
         void Awake()
         {
@@ -27,11 +28,7 @@ namespace OneWeekGamejam.Charge
 
         void Update()
         {
-            _generateTimeCnt += GameSystem.ObjectDeltaTime;
-            if (_generateTimeCnt > _generateInterval)
-            {
-                Generate();
-            }
+            CheckGenerate();
         }
 
 		void OnDrawGizmos()
@@ -39,6 +36,26 @@ namespace OneWeekGamejam.Charge
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(Vector3.zero, _generateRange);
 		}
+
+        public void StartGenerate()
+		{
+            IsStartGenerate = true;
+		}
+
+        public void StopGenerate()
+		{
+            IsStartGenerate = false;
+		}
+
+        void CheckGenerate()
+		{
+			if (!IsStartGenerate) { return; }
+            _generateTimeCnt += GameSystem.ObjectDeltaTime;
+            if (_generateTimeCnt > _generateInterval)
+            {
+                Generate();
+            }
+        }
 
 		void Generate()
         {
@@ -58,5 +75,6 @@ namespace OneWeekGamejam.Charge
                 e.OnHitEvent.RemoveAllListeners();
             });
         }
+
     }
 }
