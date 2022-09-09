@@ -19,8 +19,13 @@ namespace OneWeekGamejam.Charge
         {
             _activeEnemyList = new List<Enemy>();
         }
+		private void Start()
+		{
+            _generateTimeCnt = _generateInterval;
 
-		void Update()
+        }
+
+        void Update()
         {
             _generateTimeCnt += GameSystem.ObjectDeltaTime;
             if (_generateTimeCnt > _generateInterval)
@@ -29,7 +34,13 @@ namespace OneWeekGamejam.Charge
             }
         }
 
-        void Generate()
+		void OnDrawGizmos()
+		{
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(Vector3.zero, _generateRange);
+		}
+
+		void Generate()
         {
             if (_activeEnemyList.Count >= _maxGenerateNum) { return; }
             var ran = Random.value;

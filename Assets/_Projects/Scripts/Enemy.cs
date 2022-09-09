@@ -7,13 +7,18 @@ namespace OneWeekGamejam.Charge
 {
     public class Enemy : MonoBehaviour
     {
+        [SerializeField] SpriteFlusher _spriteFlusher = null;
         [SerializeField] float _angleSmoothTime = 1.0f;
         [SerializeField] float _angleMaxSpeed = 360.0f;
         [SerializeField] float _baseSpeed = 1.0f;
         [SerializeField] float _exp = 1.0f;
+        
+
         Transform _target = null;
         float _angleCurrent = 0.0f;
         float _angleVelocity = 0.0f;
+        
+        Vector2 _moveVec = Vector2.zero;
 
         public float ExperiencePoint { get; private set; } = 0.0f;
         public UnityEvent OnHitEvent { get; private set; } = new UnityEvent();
@@ -22,9 +27,9 @@ namespace OneWeekGamejam.Charge
         {
             ExperiencePoint = 10.0f;
             _target = player.transform;
-            _angleCurrent = GetTargetAngle();
+            _angleCurrent = GetTargetAngleRad();
             transform.position = generatePos;
-            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, _angleCurrent);
+            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
         }
 
 		void Update()
@@ -32,18 +37,30 @@ namespace OneWeekGamejam.Charge
             Move();
 		}
 
-        protected virtual void Move()
+		private void OnDrawGizmos()
+		{
+            Gizmos.color = Color.white;
+            Gizmos.DrawLine(transform.position, transform.position + ((Vector3)_moveVec * 10.0f));
+		}
+
+		protected virtual void Move()
         {
-            var a = GetTargetAngle();
-            _angleCurrent = Mathf.SmoothDampAngle(_angleCurrent, a, ref _angleVelocity, _angleSmoothTime, _angleMaxSpeed);
-            transform.rotation = Quaternion.Euler(0.0f, 0.0f, _angleCurrent);
-            transform.position += transform.up * _baseSpeed * GameSystem.ObjectDeltaTime;
+            var a = GetTargetAngleRad();
+            var off = a - _angleCurrent;
+            if (Mathf.Abs(off) > Mathf.PI)
+            {
+                _angleCurrent += Mathf.PI * (off > 0 ? 2 : -2);
+            }
+            _angleCurrent = Mathf.SmoothDamp(_angleCurrent, a, ref _angleVelocity, _angleSmoothTime, _angleMaxSpeed);
+            _moveVec = new Vector2(Mathf.Cos(_angleCurrent), Mathf.Sin(_angleCurrent));
+            transform.position += (Vector3)_moveVec * _baseSpeed * GameSystem.ObjectDeltaTime;
+
         }
 
-        float GetTargetAngle()
+        float GetTargetAngleRad()
         {
             var v = (_target.position - transform.position).normalized;
-            return Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg + 270.0f;
+            return Mathf.Atan2(v.y, v.x);
         }
 
 		void OnTriggerEnter2D(Collider2D col)
@@ -73,5 +90,7 @@ namespace OneWeekGamejam.Charge
                 OnHitEvent?.Invoke();
             });
 		}
+
+
 	}
 }
