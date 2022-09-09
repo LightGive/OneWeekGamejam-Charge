@@ -24,6 +24,11 @@ namespace OneWeekGamejam.Charge
 			_player.HP.OnHitpointChanged.AddListener(OnHitPointChanged);
 		}
 
+		void Prepare()
+		{
+			_player.transform.position = Vector3.zero;
+		}
+
 		public void GameStart()
 		{
 			_UITitle.Hide();

@@ -17,7 +17,11 @@ namespace OneWeekGamejam.Charge
             _rigid.MovePosition((Vector3)_rigid.position + transform.up * _speed * GameSystem.ObjectDeltaTime);
         }
 
-        public void SetActivate(int level, float speed, float angle, Vector3 pos)
+        void OnTriggerEnter2D(Collider2D col)
+        {
+        }
+
+		public void SetActivate(int level, float speed, float angle, Vector3 pos)
         {
             _speed = speed;
             var scale = level;

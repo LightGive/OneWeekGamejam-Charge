@@ -7,6 +7,7 @@ namespace OneWeekGamejam.Charge
 {
     public class Enemy : MonoBehaviour
     {
+        [SerializeField] Rigidbody2D _rigid;
         [SerializeField] SpriteFlusher _spriteFlusher = null;
         [SerializeField] float _angleSmoothTime = 1.0f;
         [SerializeField] float _angleMaxSpeed = 360.0f;
@@ -53,7 +54,7 @@ namespace OneWeekGamejam.Charge
             }
             _angleCurrent = Mathf.SmoothDamp(_angleCurrent, a, ref _angleVelocity, _angleSmoothTime, _angleMaxSpeed);
             _moveVec = new Vector2(Mathf.Cos(_angleCurrent), Mathf.Sin(_angleCurrent));
-            transform.position += (Vector3)_moveVec * _baseSpeed * GameSystem.ObjectDeltaTime;
+            _rigid.MovePosition((Vector3)_rigid.position + (Vector3)_moveVec * _baseSpeed * GameSystem.ObjectDeltaTime);
 
         }
 
