@@ -66,7 +66,7 @@ namespace OneWeekGamejam.Charge
 		public void Damage(Vector3 vec)
 		{
             var shakePow = 0.2f;
-
+            _spriteFlusher.StartFlush(2);
             GameSystem.Instance.ShakeCamera(vec * shakePow, 0.1f);
             GameSystem.Instance.HitStop(0.1f,()=> 
             {
