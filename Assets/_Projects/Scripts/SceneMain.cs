@@ -38,8 +38,10 @@ namespace OneWeekGamejam.Charge
 
 		public void GameStart()
 		{
+			_UIMain.ResetExp();
 			_UITitle.Hide();
 			_UIMain.Show();
+
 
 			ScoreData.ResetScore();
 			_enemyGenerator.ResetGenerate();

@@ -113,17 +113,56 @@ namespace OneWeekGamejam.Charge
 				OnChargeLevelChanged?.Invoke(chargeLevel);
 			}
 		}
-		public class ExperiencePoint
+		public class Experience
 		{
-			public class OnExperiencePointChangedEvent : UnityEvent<int, int> { }
+			const float NextExpMag = 1.04f;
+			const float StartMaxExp = 3.0f;
+
+			public class OnLevelUpEvent:UnityEvent<int> { }
+			public class OnExperiencePointChangedEvent : UnityEvent<int, float,float> { }
 			public float Current { get; private set; }
 			public float Max { get; private set; }
+			public int Level { get; private set; }
 			public OnExperiencePointChangedEvent OnExperiencePointChanged { get; private set; } = null;
-			public ExperiencePoint(int current, int max)
+			public OnLevelUpEvent OnLevelUped { get; private set; } = null;
+			public Experience()
 			{
 				OnExperiencePointChanged = new OnExperiencePointChangedEvent();
-				Current = current;
-				Max = max;
+				OnLevelUped = new OnLevelUpEvent();
+				Current = 0.0f;
+				Max = StartMaxExp;
+				Level = 1;
+			}
+
+			public void AddExperiencePoint(float exp)
+			{
+				var expCount = exp;
+				while (expCount >= Max - Current)
+				{
+					expCount -= Max - Current;
+					OnExperiencePointChanged?.Invoke(
+						Level,
+						Mathf.Clamp01(Current / Max),
+						1.0f);
+
+					//LevelUp
+					Level++;
+					Current = 0.0f;
+					Max *= NextExpMag;
+
+				}
+				var preCurrent = Current;
+				Current += expCount;
+				OnExperiencePointChanged?.Invoke(
+					Level,
+					Mathf.Clamp01(preCurrent / Max),
+					Mathf.Clamp01(Current / Max));
+			}
+
+			public void Init()
+			{
+				Current = 0.0f;
+				Level = 1;
 			}
 		}
 
@@ -134,7 +173,6 @@ namespace OneWeekGamejam.Charge
 		const int StartHitPoint = 3;
 		const int StartExperiencePoint = 3;
 		const int StartChageMaxLevel = 3;
-
 
 		[SerializeField] Collider2D _collider = null;
 		[SerializeField] SpriteFlusher _spriteFlusher = null;
@@ -150,13 +188,14 @@ namespace OneWeekGamejam.Charge
 
 		bool _isInvisible = false;
 		bool _isCharge = false;
+		int _level = 0;
 		float _exp = 0.0f;
 		float _invisibleTimeCnt = 0.0f;
 		(float target, float current, float velocity) _smoothAngle = (0.0f, 0.0f, 0.0f);
 
 		[field: SerializeField] public ChargeInfo Charge { get; private set; } = new ChargeInfo();
 		public HitPoint HP { get; private set; } = new HitPoint(StartHitPoint, StartHitPoint);
-		public ExperiencePoint EXP { get; private set; } = new ExperiencePoint(0, StartExperiencePoint);
+		public Experience EXP { get; private set; } = new Experience();
 
 		void Awake()
 		{
@@ -189,6 +228,9 @@ namespace OneWeekGamejam.Charge
 
 		public void GameStart()
 		{
+			_level = 0;
+			HP.SetMax(StartHitPoint, false);
+			EXP.Init();
 			_collider.enabled = true;
 		}
 
@@ -234,7 +276,15 @@ namespace OneWeekGamejam.Charge
 			Charge.OnChargeChanged.Invoke(false);
 			Charge.ResetChargeTime();
 			if (level == 0) { return; }
-			_bulletGenerator.GeneratePlayerBullet(level, 1000.0f, transform.up, transform.position);
+			_bulletGenerator.GeneratePlayerBullet(
+				level, 
+				1000.0f, 
+				transform.up, 
+				transform.position,
+				()=>
+				{
+					EXP.AddExperiencePoint(Random.Range(1, 3));
+				});
 		}
 
 		/// <summary>

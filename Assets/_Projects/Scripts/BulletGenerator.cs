@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace OneWeekGamejam.Charge 
 {
@@ -18,7 +19,7 @@ namespace OneWeekGamejam.Charge
         {
         }
 
-        public void GeneratePlayerBullet(int level, float speed, Vector3 dir, Vector3 pos)
+        public void GeneratePlayerBullet(int level, float speed, Vector3 dir, Vector3 pos,UnityAction onHitEvent = null)
         {
             dir = dir.normalized;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 270.0f;
@@ -28,6 +29,7 @@ namespace OneWeekGamejam.Charge
             {
                 _pool.ReleaseGameObject(bullet);
                 bullet.OnHitEvent.RemoveAllListeners();
+                onHitEvent?.Invoke();
             });
         }
     }
