@@ -20,7 +20,6 @@ public static class SEPath{
 	public const string PLAYER_SHOT2          = "SE/PlayerShot2";
 	public const string PLAYER_SHOT3          = "SE/PlayerShot3";
 	public const string PLAYER_SHOT4          = "SE/PlayerShot4";
-	public const string PLAYER_SHOT5          = "SE/PlayerShot5";
 
 }
 

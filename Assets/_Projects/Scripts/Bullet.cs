@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using KanKikuchi.AudioManager;
 
 namespace OneWeekGamejam.Charge
 {
@@ -9,11 +10,14 @@ namespace OneWeekGamejam.Charge
     {
         [SerializeField] Rigidbody2D _rigid = null;
         [SerializeField] SpriteRenderer _spRenderer = null;
+        [SerializeField] SEAssistant _seAssist = null;
         [SerializeField] bool isPenetration = false;
+
         float _speed = 0.0f;
         public UnityEvent OnHitEvent { get; private set; } = new UnityEvent();
         public UnityEvent OnHitDestroy { get; private set; } = new UnityEvent();
         public UnityEvent OnScreenOutEvent { get; private set; } = new UnityEvent();
+        
 
         void Update()
 		{
@@ -29,6 +33,7 @@ namespace OneWeekGamejam.Charge
             }
             result.Hit(transform.up);
             Hit();
+            
         }
 
         public void Generate(float speed, float angle, Vector3 pos)

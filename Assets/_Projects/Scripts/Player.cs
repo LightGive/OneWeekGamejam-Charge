@@ -39,6 +39,7 @@ namespace OneWeekGamejam.Charge
 
 			public void SetCurrent(int value)
 			{
+				Debug.Log($"SetCurrent:{value}");
 				if (value > Max)
 				{
 					Debug.Log("Å‘å’l‚ğã‰ñ‚Á‚Ä‰ñ•œo—ˆ‚È‚¢");
@@ -168,7 +169,9 @@ namespace OneWeekGamejam.Charge
 		public void GameStart()
 		{
 			_level = 0;
+			HP.SetCurrent(StartHitPoint);
 			HP.SetMax(StartHitPoint, false);
+			Charge.Init(StartChageMaxLevel, 0);
 			EXP.Init();
 			_collider.enabled = true;
 			_canMove = true;

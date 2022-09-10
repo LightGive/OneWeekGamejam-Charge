@@ -40,8 +40,8 @@ namespace OneWeekGamejam.Charge
 		public void GameStart()
 		{
 			_UIMain.ResetExp();
-			_UITitle.Hide();
 			_UIMain.Show();
+
 
 			ScoreData.ResetScore();
 			_enemyGenerator.ResetGenerate();
@@ -59,8 +59,26 @@ namespace OneWeekGamejam.Charge
 			StartCoroutine(GameOverCoroutine());
 		}
 
+		public void ResultReturnTitle()
+		{
+			_UIResult.Hide(onHideAfter:()=> 
+			{
+				_UIMain.Hide();
+				_UITitle.Show();
+			});
+		}
+
+		public void ResultRetry()
+		{
+			_UIResult.Hide(onHideAfter: () =>
+			{
+				GameStart();
+			});
+		}
+
 		IEnumerator GameOverCoroutine()
 		{
+			Debug.Log("GameOverCoroutine");
 			yield return GameSystem.Instance.WaitForSecoundsForObjectTime(1.0f);
 			_UIResult.Show();
 		}

@@ -11,7 +11,7 @@ using TMPro;
 
 namespace OneWeekGamejam.Charge
 {
-	public class UIMain : UINode
+	public class UIMain : UINodeAnimation
 	{
 		const float LevelUpStopDuration = 0.1f;
 		public class OnAddExpEvent : UnityEvent<int> { }
@@ -46,7 +46,8 @@ namespace OneWeekGamejam.Charge
 			_player.Charge.OnChargeCanceled.AddListener(_UIChargeLevel.OnChargeCanceled);
 		}
 
-		protected override void OnShowBefore()
+
+		protected override void OnShowAfter()
 		{
 			base.OnShowAfter();
 			_UIChargeLevel.Show();
@@ -60,7 +61,6 @@ namespace OneWeekGamejam.Charge
 			_expBarCoroutine = StartCoroutine(ExperienceBarUpCoroutine(minLevel, fromTo.Item1, fromTo.Item2, _expBarUpDic.Count + 1));
 		}
 
-
 		public void ResetExp()
 		{
 			_textLevel.text = "1";
@@ -71,7 +71,6 @@ namespace OneWeekGamejam.Charge
 				StopCoroutine(_expBarCoroutine);
 			}
 		}
-
 
 		void OnHitpointChanged(int max, int current)
 		{

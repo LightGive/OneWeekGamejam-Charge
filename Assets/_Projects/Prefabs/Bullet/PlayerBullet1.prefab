@@ -170,6 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigid: {fileID: 1329925454592872744}
   _spRenderer: {fileID: 6531992101020067348}
+  _seAssist: {fileID: 0}
   isPenetration: 1
 --- !u!50 &1329925454592872744
 Rigidbody2D:

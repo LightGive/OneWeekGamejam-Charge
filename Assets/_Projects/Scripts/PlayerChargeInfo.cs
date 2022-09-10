@@ -65,6 +65,15 @@ namespace OneWeekGamejam.Charge
 			_currentChargeInfo = ChargeInfos[0];
 		}
 
+		public void Init(int chargeLevelMax, int chargeLevel)
+		{
+			ChargeTimeCnt = 0.0f;
+			_chargeLevelMax = chargeLevelMax;
+			OnChargeLevelMaxChanged?.Invoke(chargeLevelMax);
+			OnChargeLevelChanged?.Invoke(chargeLevel);
+			_anim.gameObject.SetActive(false);
+		}
+
 		public void SetChargeMaxLevel(int chargeLevelMax)
 		{
 			ChargeLevelMax = chargeLevelMax;
@@ -104,13 +113,6 @@ namespace OneWeekGamejam.Charge
 			_anim.transform.localScale = new Vector3(scale, scale, scale);
 		}
 
-		public void Init(int chargeLevelMax, int chargeLevel)
-		{
-			_chargeLevelMax = chargeLevelMax;
-			OnChargeLevelMaxChanged?.Invoke(chargeLevelMax);
-			OnChargeLevelChanged?.Invoke(chargeLevel);
-			_anim.gameObject.SetActive(false);
-		}
 
 		void ChanrgeChargeLevel(int level)
 		{

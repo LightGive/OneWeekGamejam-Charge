@@ -7,13 +7,13 @@ using KanKikuchi.AudioManager;
 
 namespace OneWeekGamejam.Charge
 {
-    public class UITitle : UINode
+    public class UITitle : UINodeAnimation
     {
         [SerializeField] Button _buttonStart = null;
 		[SerializeField] SceneMain _sceneMain = null;
-		
 		[SerializeField] Slider _sliderVolumeBGM = null;
 		[SerializeField] Slider _sliderVolumeSE = null;
+		bool _canGameStart = false;
 
 		protected override void OnInit()
 		{
@@ -34,13 +34,17 @@ namespace OneWeekGamejam.Charge
 			BGMManager.Instance.Play(BGMPath.TITLE1);
 		}
 
-		protected override void OnHideBefore()
+		protected override void OnShowAfter()
 		{
-			base.OnHideBefore();
+			base.OnShowAfter();
+			_canGameStart = true;
 		}
 
 		void OnButtonDownStart()
 		{
+			if (!_canGameStart) { return; }
+			_canGameStart = false;
+			Hide();
 			_sceneMain.GameStart();
 		}
 
