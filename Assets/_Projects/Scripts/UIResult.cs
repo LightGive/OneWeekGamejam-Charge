@@ -7,7 +7,7 @@ using TMPro;
 
 namespace OneWeekGamejam.Charge
 {
-	public class UIResult : UINode
+	public class UIResult : UINodeAnimation
 	{
 		[SerializeField] TextMeshProUGUI _textScore = null;
 		[SerializeField] Button _buttonTitle = null;
