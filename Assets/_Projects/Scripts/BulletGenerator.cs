@@ -9,6 +9,7 @@ namespace OneWeekGamejam.Charge
     public class BulletGenerator : MonoBehaviour
     {
         [SerializeField] BulletPool[] _bulletPools = null;
+        [SerializeField] MainCamera _mainCamera = null;
         List<Bullet> _activeBulletList = null;
 
         void Awake()
@@ -16,7 +17,19 @@ namespace OneWeekGamejam.Charge
             _activeBulletList = new List<Bullet>();
         }
 
-        public void GeneratePlayerBullet(int level, float speed, Vector3 dir, Vector3 pos)
+        void Update()
+        {
+            for (var i = _activeBulletList.Count - 1; i >= 0; i--)
+            {
+                var target = _activeBulletList[i];
+                if (_mainCamera.IsScreenOut(target.transform.position, 100.0f))
+                {
+                    target.Clear();
+                }
+            }
+        }
+
+		public void GeneratePlayerBullet(int level, float speed, Vector3 dir, Vector3 pos)
         {
             dir = dir.normalized;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 270.0f;
@@ -25,15 +38,22 @@ namespace OneWeekGamejam.Charge
             PlayShotSound(level);
 
             _activeBulletList.Add(bullet);
-            bullet.OnScreenOutEvent.AddListener(() =>
-            {
-                EnemyReleaseEvent(bullet, _bulletPools[level]);
-            });
-
             bullet.OnHitDestroy.AddListener(() =>
             {
                 EnemyReleaseEvent(bullet, _bulletPools[level]);
             });
+            bullet.OnCleared.AddListener(() => 
+            {
+                EnemyReleaseEvent(bullet, _bulletPools[level]);
+            });
+        }
+
+        public void ClearGenerateBullet()
+        {
+            for (var i = _activeBulletList.Count - 1; i >= 0; i--)
+            {
+                _activeBulletList[i].Clear();
+            }
         }
 
         void EnemyReleaseEvent(Bullet b, BulletPool pool)

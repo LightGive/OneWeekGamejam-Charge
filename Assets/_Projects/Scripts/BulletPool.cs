@@ -39,7 +39,7 @@ namespace OneWeekGamejam.Charge
             Pool.Release(obj);
             obj.OnHitEvent.RemoveAllListeners();
             obj.OnHitDestroy.RemoveAllListeners();
-            obj.OnScreenOutEvent.RemoveAllListeners();
+            obj.OnCleared.RemoveAllListeners();
         }
     }
 }

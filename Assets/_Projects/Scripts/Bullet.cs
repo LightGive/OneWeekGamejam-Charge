@@ -16,8 +16,8 @@ namespace OneWeekGamejam.Charge
         float _speed = 0.0f;
         public UnityEvent OnHitEvent { get; private set; } = new UnityEvent();
         public UnityEvent OnHitDestroy { get; private set; } = new UnityEvent();
-        public UnityEvent OnScreenOutEvent { get; private set; } = new UnityEvent();
-        
+        public UnityEvent OnCleared { get; private set; } = new UnityEvent();
+
 
         void Update()
 		{
@@ -51,5 +51,9 @@ namespace OneWeekGamejam.Charge
                 OnHitDestroy?.Invoke();
 			}
 		}
+        public void Clear()
+        {
+            OnCleared?.Invoke();
+        }
     }
 }

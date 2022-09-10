@@ -12,7 +12,7 @@ namespace OneWeekGamejam.Charge
         [SerializeField] SpriteFlusher _spriteFlusher = null;
         [SerializeField] float _angleSmoothTime = 1.0f;
         [SerializeField] float _angleMaxSpeed = 360.0f;
-        [SerializeField] float _baseSpeed = 1.0f;
+        [SerializeField] float _speed = 20.0f;
         [SerializeField] float _exp = 1.0f;
         [SerializeField] int _hp = 1;
         [field: SerializeField] public float ExperiencePoint { get; private set; } = 1.0f;
@@ -50,8 +50,7 @@ namespace OneWeekGamejam.Charge
             }
             _angleCurrent = Mathf.SmoothDamp(_angleCurrent, a, ref _angleVelocity, _angleSmoothTime, _angleMaxSpeed);
             _moveVec = new Vector2(Mathf.Cos(_angleCurrent), Mathf.Sin(_angleCurrent)).normalized;
-            _rigid.MovePosition((Vector3)_rigid.position + (Vector3)_moveVec * _baseSpeed * GameSystem.ObjectDeltaTime);
-
+            _rigid.MovePosition((Vector3)_rigid.position + (Vector3)_moveVec * _speed * GameSystem.ObjectDeltaTime);
         }
 
         public void Generate(Vector3 generatePos, Player player)
@@ -69,17 +68,16 @@ namespace OneWeekGamejam.Charge
             var shakePow = 0.2f;
             _spriteFlusher.StartFlush(2);
             SEManager.Instance.Play(SEPath.ENEMY_HIT);
-            GameSystem.Instance.ShakeCamera(vec * shakePow, 0.1f, 50.0f);
+            GameSystem.Instance.ShakeCamera(vec * shakePow, 0.1f, 10.0f);
             GameSystem.Instance.HitStop(0.1f, () =>
-             {
-                 OnHited?.Invoke();
-             });
-
-            _hpCnt--;
-            if (_hpCnt <= 0)
             {
-                Dead();
-            }
+                 OnHited?.Invoke();
+                 _hpCnt--;
+                 if (_hpCnt <= 0)
+                 {
+                     Dead();
+                 }
+             });
         }
 
         public void Clear()

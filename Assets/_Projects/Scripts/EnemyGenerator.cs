@@ -6,18 +6,8 @@ namespace OneWeekGamejam.Charge
 {
     public class EnemyGenerator : MonoBehaviour
     {
-        public enum EnemyType
-        {
-            Ufo = 0,
-        }
-        [System.Serializable]
-        public class WaveData
-		{
-            public EnemyType EnemyType;
-
-		}
-
         [SerializeField] EnemyPool[] _enemyPools = null;
+        [SerializeField] MainCamera _mainCamera = null;
         [SerializeField] Player _player = null;
         [SerializeField] int _maxGenerateNum = 3;
         [SerializeField] float _oneWaveTime = 0.0f;
@@ -86,12 +76,9 @@ namespace OneWeekGamejam.Charge
 		void Generate()
         {
             if (_activeEnemyList.Count >= _maxGenerateNum) { return; }
-            var ran = Random.value;
-            var r = Mathf.PI * 2.0f * ran;
-            var v = new Vector3(Mathf.Sin(r), Mathf.Cos(r), 0.0f);
-            var p = _player.transform.position + (v * _generateRange);
-            var enemyType = (int)_currentWave.EnemyType;
+            var enemyType = (int)_currentWave.GenerateType;
             var e = _enemyPools[enemyType].Pool.Get();
+            var p = _mainCamera.GetRandomPositionScreenOut(10.0f);
             e.Generate(p, _player);
             _activeEnemyList.Add(e);
             _generateTimeCnt = 0.0f;

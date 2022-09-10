@@ -39,7 +39,6 @@ namespace OneWeekGamejam.Charge
 
 			public void SetCurrent(int value)
 			{
-				Debug.Log($"SetCurrent:{value}");
 				if (value > Max)
 				{
 					Debug.Log("Å‘å’l‚ðã‰ñ‚Á‚Ä‰ñ•œo—ˆ‚È‚¢");
