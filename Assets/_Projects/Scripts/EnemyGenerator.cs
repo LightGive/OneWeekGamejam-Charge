@@ -37,11 +37,6 @@ namespace OneWeekGamejam.Charge
         {
             _activeEnemyList = new List<Enemy>();
         }
-		private void Start()
-		{
-            _generateTimeCnt = _generateInterval;
-
-        }
 
         void Update()
         {
@@ -97,12 +92,17 @@ namespace OneWeekGamejam.Charge
             var p = _player.transform.position + (v * _generateRange);
             var enemyType = (int)_currentWave.EnemyType;
             var e = _enemyPools[enemyType].Pool.Get();
-            e.SetActivate(p, _player);
+            e.Generate(p, _player);
             _activeEnemyList.Add(e);
             _generateTimeCnt = 0.0f;
 
-            e.OnHitEvent.AddListener(() => EnemyReleaseEvent(e, _enemyPools[enemyType]));
-            e.OnClearEvent.AddListener(() => EnemyReleaseEvent(e, _enemyPools[enemyType]));
+            e.OnDeaded.AddListener(() =>
+            {
+                EnemyReleaseEvent(e, _enemyPools[enemyType]);
+                _player.EXP.AddExperiencePoint(e.ExperiencePoint);
+            });
+
+            e.OnCleared.AddListener(() => EnemyReleaseEvent(e, _enemyPools[enemyType]));
         }
 
         void EnemyReleaseEvent(Enemy e, EnemyPool pool)

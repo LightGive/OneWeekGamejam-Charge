@@ -8,6 +8,9 @@ namespace OneWeekGamejam.Charge
 	[System.Serializable]
 	public class PlayerChargeInfo
 	{
+		const int MaxChageMaxLevel = 4;
+		const string AnimParamIntChargeLevel = "ChargeLevel";
+
 		[System.Serializable]
 		public class ChargeInfo
 		{
@@ -17,6 +20,7 @@ namespace OneWeekGamejam.Charge
 		public class OnChargeLevelChangeEvent : UnityEvent<int> { }
 		public class OnChargeLevelMaxChangeEvent : UnityEvent<int> { }
 
+		[SerializeField] Animator _anim = null;
 		[SerializeField] AudioSource _source = null;
 		[SerializeField] ChargeInfo _currentChargeInfo = null;
 		int _chargeLevel = 0;
@@ -69,6 +73,7 @@ namespace OneWeekGamejam.Charge
 		public void ChargeStart()
 		{
 			ChanrgeChargeLevel(0);
+			_anim.gameObject.SetActive(true);
 			_source.Play();
 			OnChargeChanged.Invoke(true);
 		}
@@ -76,6 +81,7 @@ namespace OneWeekGamejam.Charge
 		public void ChargeStop()
 		{
 			ChanrgeChargeLevel(0);
+			_anim.gameObject.SetActive(false);
 			_source.Stop();
 			ChargeTimeCnt = 0.0f;
 			OnChargeChanged.Invoke(false);
@@ -84,6 +90,7 @@ namespace OneWeekGamejam.Charge
 		public void ChargeCancel()
 		{
 			ChanrgeChargeLevel(0);
+			_anim.gameObject.SetActive(false);
 			_source.Stop();
 			ChargeTimeCnt = 0.0f;
 			OnChargeCanceled.Invoke();
@@ -93,6 +100,8 @@ namespace OneWeekGamejam.Charge
 		{
 			ChargeTimeCnt = Mathf.Clamp(ChargeTimeCnt + GameSystem.ObjectDeltaTime, 0.0f, ChargeLevelMax * ChargeTimeOneLevel);
 			ChargeLevel = Mathf.FloorToInt(ChargeTimeCnt / ChargeTimeOneLevel);
+			var scale = Mathf.Clamp01(ChargeTimeCnt / (ChargeTimeOneLevel * MaxChageMaxLevel));
+			_anim.transform.localScale = new Vector3(scale, scale, scale);
 		}
 
 		public void Init(int chargeLevelMax, int chargeLevel)
@@ -100,14 +109,17 @@ namespace OneWeekGamejam.Charge
 			_chargeLevelMax = chargeLevelMax;
 			OnChargeLevelMaxChanged?.Invoke(chargeLevelMax);
 			OnChargeLevelChanged?.Invoke(chargeLevel);
+			_anim.gameObject.SetActive(false);
 		}
 
 		void ChanrgeChargeLevel(int level)
 		{
 			_chargeLevel = level;
+			_anim.SetInteger(AnimParamIntChargeLevel, level);
 			_currentChargeInfo = ChargeInfos[level];
 			_source.pitch = _currentChargeInfo.Pitch;
 			OnChargeLevelChanged?.Invoke(level);
+
 		}
 	}
 }

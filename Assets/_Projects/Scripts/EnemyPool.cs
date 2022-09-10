@@ -39,8 +39,9 @@ namespace OneWeekGamejam.Charge
         public void ReleaseEnemy(Enemy obj)
         {
             Pool.Release(obj);
-            obj.OnHitEvent.RemoveAllListeners();
-            obj.OnClearEvent.RemoveAllListeners();
+            obj.OnHited.RemoveAllListeners();
+            obj.OnCleared.RemoveAllListeners();
+            obj.OnDeaded.RemoveAllListeners();
         }
     }
 }

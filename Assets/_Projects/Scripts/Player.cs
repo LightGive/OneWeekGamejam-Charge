@@ -106,10 +106,9 @@ namespace OneWeekGamejam.Charge
 		const string AnimParamDamage = "Damage";
 		const string AnimParamNormal = "Normal";
 		const int MaxHitpoint = 4;
-		const int MaxChageMaxLevel = 4;
 		const int StartHitPoint = 1;
 		const int StartExperiencePoint = 3;
-		const int StartChageMaxLevel = 2;
+		const int StartChageMaxLevel = 3;
 
 		[SerializeField] SceneMain _sceneMain = null;
 		[SerializeField] Collider2D _collider = null;
@@ -219,14 +218,10 @@ namespace OneWeekGamejam.Charge
 			Charge.ChargeStop();
 			if (level == 0) { return; }
 			_bulletGenerator.GeneratePlayerBullet(
-				level, 
-				1000.0f, 
-				transform.up, 
-				transform.position,
-				()=>
-				{
-					EXP.AddExperiencePoint(Random.Range(1, 3));
-				});
+				level - 1,
+				1000.0f,
+				transform.up,
+				transform.position);
 		}
 
 		/// <summary>

@@ -41,12 +41,16 @@ namespace OneWeekGamejam.Charge
 
 		void OnButtonDownTitle()
 		{
-			Hide();
+			Hide(onHideAfter:()=> 
+			{ 
+				
+			});
 		}
 
 		void OnButtonDownRetry()
 		{
-
+			
 		}
+
 	}
 }

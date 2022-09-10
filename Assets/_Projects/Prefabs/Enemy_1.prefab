@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4246715116621001449}
   - component: {fileID: 4094707798066863505}
   - component: {fileID: 2654096661931292323}
+  - component: {fileID: 2836914897254765470}
   m_Layer: 0
   m_Name: Circle
   m_TagString: Enemy
@@ -138,6 +139,19 @@ MonoBehaviour:
   _spRenderer: {fileID: 4246715116621001448}
   _flushTime: 0.05
   _noFlushTime: 0.1
+--- !u!114 &2836914897254765470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4246715116621001454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7df73457d4a53e645a562833cfba12d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemy: {fileID: 4246715117701138690}
 --- !u!1 &4246715117701138688
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,6 +204,8 @@ MonoBehaviour:
   _angleMaxSpeed: 360
   _baseSpeed: 120
   _exp: 1
+  _hp: 1
+  <ExperiencePoint>k__BackingField: 1
 --- !u!50 &4246715117701138691
 Rigidbody2D:
   serializedVersion: 4

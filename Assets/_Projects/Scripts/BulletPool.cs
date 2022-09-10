@@ -34,9 +34,12 @@ namespace OneWeekGamejam.Charge
         {
             Destroy(obj);
         }
-        public void ReleaseGameObject(Bullet obj)
+        public void ReleaseBullet(Bullet obj)
         {
             Pool.Release(obj);
+            obj.OnHitEvent.RemoveAllListeners();
+            obj.OnHitDestroy.RemoveAllListeners();
+            obj.OnScreenOutEvent.RemoveAllListeners();
         }
     }
 }

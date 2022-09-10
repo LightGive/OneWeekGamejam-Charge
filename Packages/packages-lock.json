@@ -292,7 +292,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "04d00be4f1e08b099dc003339e5ce05a7960d850"
+      "hash": "743b9e2afd926d904336a2b84acbc49c562ce0a0"
     },
     "jp.lightgive.unityutil": {
       "version": "https://github.com/LightGive/UnityUtil.git",

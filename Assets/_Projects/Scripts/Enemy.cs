@@ -14,25 +14,20 @@ namespace OneWeekGamejam.Charge
         [SerializeField] float _angleMaxSpeed = 360.0f;
         [SerializeField] float _baseSpeed = 1.0f;
         [SerializeField] float _exp = 1.0f;
+        [SerializeField] int _hp = 1;
+        [field: SerializeField] public float ExperiencePoint { get; private set; } = 1.0f;
 
         Transform _target = null;
         float _angleCurrent = 0.0f;
         float _angleVelocity = 0.0f;
+        int _hpCnt = 1;
         
         Vector2 _moveVec = Vector2.zero;
 
-        public float ExperiencePoint { get; private set; } = 0.0f;
-        public UnityEvent OnHitEvent { get; private set; } = new UnityEvent();
-        public UnityEvent OnClearEvent { get; private set; } = new UnityEvent();
+        public UnityEvent OnHited { get; private set; } = new UnityEvent();
+        public UnityEvent OnDeaded { get; private set; } = new UnityEvent();
+        public UnityEvent OnCleared { get; private set; } = new UnityEvent();
 
-        public void SetActivate(Vector3 generatePos, Player player)
-        {
-            ExperiencePoint = 10.0f;
-            _target = player.transform;
-            _angleCurrent = GetTargetAngleRad();
-            transform.position = generatePos;
-            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-        }
 
 		void Update()
 		{
@@ -59,45 +54,48 @@ namespace OneWeekGamejam.Charge
 
         }
 
+        public void Generate(Vector3 generatePos, Player player)
+        {
+            _hpCnt = _hp;
+            _target = player.transform;
+            _angleCurrent = GetTargetAngleRad();
+            transform.position = generatePos;
+            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+            _spriteFlusher.ResetFlush();
+        }
+
+        public void Damage(Vector3 vec)
+        {
+            var shakePow = 0.2f;
+            _spriteFlusher.StartFlush(2);
+            SEManager.Instance.Play(SEPath.ENEMY_HIT);
+            GameSystem.Instance.ShakeCamera(vec * shakePow, 0.1f, 50.0f);
+            GameSystem.Instance.HitStop(0.1f, () =>
+             {
+                 OnHited?.Invoke();
+             });
+
+            _hpCnt--;
+            if (_hpCnt <= 0)
+            {
+                Dead();
+            }
+        }
+
+        public void Clear()
+		{
+            OnCleared?.Invoke();
+		}
+
+        void Dead()
+        {
+            OnDeaded?.Invoke();
+        }
         float GetTargetAngleRad()
         {
             var v = (_target.position - transform.position).normalized;
             return Mathf.Atan2(v.y, v.x);
         }
 
-		void OnTriggerEnter2D(Collider2D col)
-		{
-            if (col.tag != TagName.PlayerBullet) { return; }
-            var bullet = col.transform.GetComponent<Bullet>();
-            if (bullet == null) 
-            {
-                Debug.LogError("Bulletがアタッチされて無い");
-                return; 
-            }
-            var bulletVec = bullet.transform.up;
-			if (bullet.gameObject.activeSelf)
-			{
-                bullet.Hit();
-            }
-            Damage(bulletVec);
-		}
-
-		public void Damage(Vector3 vec)
-		{
-            var shakePow = 0.2f;
-            _spriteFlusher.StartFlush(2);
-            SEManager.Instance.Play(SEPath.ENEMY_HIT);
-            GameSystem.Instance.ShakeCamera(vec * shakePow, 0.1f, 50.0f);
-            GameSystem.Instance.HitStop(0.1f,()=> 
-            {
-                OnHitEvent?.Invoke();
-            });
-		}
-
-        public void Clear()
-		{
-            OnClearEvent?.Invoke();
-		}
-
-	}
+    }
 }
