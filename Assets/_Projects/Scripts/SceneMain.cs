@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using KanKikuchi.AudioManager;
 
 namespace OneWeekGamejam.Charge
 {
@@ -42,11 +43,12 @@ namespace OneWeekGamejam.Charge
 			_UITitle.Hide();
 			_UIMain.Show();
 
-
 			ScoreData.ResetScore();
 			_enemyGenerator.ResetGenerate();
 			_enemyGenerator.StartGenerate();
 			_player.GameStart();
+
+			BGMSwitcher.FadeOutAndFadeIn(BGMPath.MAIN1);
 		}
 
 		void GameOver()

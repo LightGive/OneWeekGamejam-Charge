@@ -60,7 +60,8 @@ crashlytics-build.properties
 
 
 # Project
-[Aa]ssets/_Projects/Fonts
+[Aa]ssets/_Projects/Fonts/
+[Aa]ssets/AudioManager_KanKikuchi/Resources/
 Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
 Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Oswald Bold SDF.asset
 UserSettings/EditorUserSettings.asset

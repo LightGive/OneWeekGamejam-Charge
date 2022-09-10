@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using LightGive.UIUtil;
+using KanKikuchi.AudioManager;
 
 namespace OneWeekGamejam.Charge
 {
@@ -15,6 +16,17 @@ namespace OneWeekGamejam.Charge
 		{
 			base.OnInit();
 			_buttonStart.onClick.AddListener(OnButtonDownStart);
+		}
+
+		protected override void OnShowBefore()
+		{
+			base.OnShowBefore();
+			BGMManager.Instance.Play(BGMPath.TITLE1);
+		}
+
+		protected override void OnHideBefore()
+		{
+			base.OnHideBefore();
 		}
 
 		void OnButtonDownStart()
