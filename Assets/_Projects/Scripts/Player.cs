@@ -113,14 +113,30 @@ namespace OneWeekGamejam.Charge
 				OnChargeLevelChanged?.Invoke(chargeLevel);
 			}
 		}
+		public class ExperiencePoint
+		{
+			public class OnExperiencePointChangedEvent : UnityEvent<int, int> { }
+			public float Current { get; private set; }
+			public float Max { get; private set; }
+			public OnExperiencePointChangedEvent OnExperiencePointChanged { get; private set; } = null;
+			public ExperiencePoint(int current, int max)
+			{
+				OnExperiencePointChanged = new OnExperiencePointChangedEvent();
+				Current = current;
+				Max = max;
+			}
+		}
 
 		const string AnimParamDamage = "Damage";
 		const string AnimParamNormal = "Normal";
 		const int MaxHitpoint = 4;
 		const int MaxChageMaxLevel = 4;
 		const int StartHitPoint = 3;
+		const int StartExperiencePoint = 3;
 		const int StartChageMaxLevel = 3;
 
+
+		[SerializeField] Collider2D _collider = null;
 		[SerializeField] SpriteFlusher _spriteFlusher = null;
 		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] PlayerInput _playerInput = null;
@@ -140,6 +156,7 @@ namespace OneWeekGamejam.Charge
 
 		[field: SerializeField] public ChargeInfo Charge { get; private set; } = new ChargeInfo();
 		public HitPoint HP { get; private set; } = new HitPoint(StartHitPoint, StartHitPoint);
+		public ExperiencePoint EXP { get; private set; } = new ExperiencePoint(0, StartExperiencePoint);
 
 		void Awake()
 		{
@@ -168,6 +185,11 @@ namespace OneWeekGamejam.Charge
 		{
 			if (col.tag != TagName.Enemy) { return; }
 			Damage();
+		}
+
+		public void GameStart()
+		{
+			_collider.enabled = true;
 		}
 
 		void Aim()
@@ -241,6 +263,10 @@ namespace OneWeekGamejam.Charge
 			{
 				_anim.Play(AnimParamDamage);
 				HP.SetCurrent(HP.Current - 1);
+				if(HP.Current <= 0)
+				{
+					Dead();
+				}
 			});
 		}
 
@@ -257,6 +283,11 @@ namespace OneWeekGamejam.Charge
 				_isInvisible = false;
 				_anim.Play(AnimParamNormal);
 			}
+		}
+
+		void Dead()
+		{
+			_collider.enabled = false;
 		}
 	}
 }

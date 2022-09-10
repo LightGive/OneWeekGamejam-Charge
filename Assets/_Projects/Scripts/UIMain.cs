@@ -11,7 +11,8 @@ namespace OneWeekGamejam.Charge
         [SerializeField] Image[] _imageHP = new Image[3];
         [SerializeField] Sprite _hpFull = null;
         [SerializeField] Sprite _hpEmpty = null;
-        [SerializeField] Player _player = null;
+		[SerializeField] Slider _expSlider = null;
+		[SerializeField] Player _player = null;
 		[SerializeField] UIChargeLevel _UIChargeLevel = null;
 
 		protected override void OnInit()
@@ -21,6 +22,7 @@ namespace OneWeekGamejam.Charge
 			_player.Charge.OnChargeChanged.AddListener(_UIChargeLevel.OnChargeChanged);
 			_player.Charge.OnChargeLevelChanged.AddListener(_UIChargeLevel.OnChargeLevelChanged);
 			_player.Charge.OnChargeLevelMaxChanged.AddListener(_UIChargeLevel.OnChargeLevelMaxChanged);
+			_player.EXP.OnExperiencePointChanged.AddListener()
 		}
 
 		protected override void OnShowBefore()
@@ -38,6 +40,11 @@ namespace OneWeekGamejam.Charge
 				if (!target.gameObject.activeSelf) { continue; }
 				target.sprite = i < current ? _hpFull : _hpEmpty;
 			}
+		}
+
+		void OnExperiencePointChanged(int max int current)
+		{
+
 		}
 	}
 }

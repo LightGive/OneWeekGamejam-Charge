@@ -12,12 +12,19 @@ namespace OneWeekGamejam.Charge
 		[SerializeField] TextMeshProUGUI _textScore = null;
 		[SerializeField] Button _buttonTitle = null;
 		[SerializeField] Button _buttonRetry = null;
+		[SerializeField] SceneMain _sceneMain  = null;
 
 		protected override void OnInit()
 		{
 			base.OnInit();
 			_buttonRetry.onClick.AddListener(OnButtonDownRetry);
 			_buttonTitle.onClick.AddListener(OnButtonDownTitle);
+		}
+
+		protected override void OnShowAfter()
+		{
+			base.OnShowAfter();
+			_sceneMain.Prepare();
 		}
 
 		public void SetScore(ScoreData scoreData)

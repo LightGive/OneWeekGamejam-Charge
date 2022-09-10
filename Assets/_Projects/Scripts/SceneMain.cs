@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace OneWeekGamejam.Charge
 {
@@ -24,8 +25,14 @@ namespace OneWeekGamejam.Charge
 			_player.HP.OnHitpointChanged.AddListener(OnHitPointChanged);
 		}
 
-		void Prepare()
+		void Update()
 		{
+
+		}
+
+		public void Prepare()
+		{
+			_enemyGenerator.ClearGenerateEnemy();
 			_player.transform.position = Vector3.zero;
 		}
 
@@ -35,7 +42,9 @@ namespace OneWeekGamejam.Charge
 			_UIMain.Show();
 
 			ScoreData.ResetScore();
+			_enemyGenerator.ResetGenerate();
 			_enemyGenerator.StartGenerate();
+			_player.GameStart();
 		}
 
 		void GameOver()

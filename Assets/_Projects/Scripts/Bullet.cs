@@ -19,6 +19,7 @@ namespace OneWeekGamejam.Charge
 
         void OnTriggerEnter2D(Collider2D col)
         {
+
         }
 
 		public void SetActivate(int level, float speed, float angle, Vector3 pos)

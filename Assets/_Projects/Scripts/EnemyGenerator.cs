@@ -6,14 +6,31 @@ namespace OneWeekGamejam.Charge
 {
     public class EnemyGenerator : MonoBehaviour
     {
-        [SerializeField] EnemyPool _enemyPool = null;
+        public enum EnemyType
+        {
+            Ufo = 0,
+        }
+        [System.Serializable]
+        public class WaveData
+		{
+            public EnemyType EnemyType;
+
+		}
+
+        [SerializeField] EnemyPool[] _enemyPools = null;
         [SerializeField] Player _player = null;
         [SerializeField] int _maxGenerateNum = 3;
+        [SerializeField] float _oneWaveTime = 0.0f;
         [SerializeField] float _generateInterval = 2.0f;
         [SerializeField] float _generateRange = 10.0f;
+        [SerializeField] WaveData[] _waveData = null;
+
         List<Enemy> _activeEnemyList = null;
+        WaveData _currentWave = null;
 
         float _generateTimeCnt = 0.0f;
+        float _waveTimeCnt  = 0.0f;
+
         public bool IsStartGenerate { get; private set; } = false;
 
         void Awake()
@@ -35,6 +52,20 @@ namespace OneWeekGamejam.Charge
 		{
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(Vector3.zero, _generateRange);
+		}
+
+        public void ClearGenerateEnemy()
+		{
+            for (var i = _activeEnemyList.Count - 1; i >= 0; i--)
+            {
+                _activeEnemyList[i].Clear();
+            }
+		}
+
+        public void ResetGenerate()
+		{
+            _currentWave = _waveData[0];
+            _waveTimeCnt = 0.0f;
 		}
 
         public void StartGenerate()
@@ -64,17 +95,20 @@ namespace OneWeekGamejam.Charge
             var r = Mathf.PI * 2.0f * ran;
             var v = new Vector3(Mathf.Sin(r), Mathf.Cos(r), 0.0f);
             var p = _player.transform.position + (v * _generateRange);
-            var e = _enemyPool.Pool.Get();
+            var enemyType = (int)_currentWave.EnemyType;
+            var e = _enemyPools[enemyType].Pool.Get();
             e.SetActivate(p, _player);
             _activeEnemyList.Add(e);
             _generateTimeCnt = 0.0f;
-            e.OnHitEvent.AddListener(() =>
-            {
-                _enemyPool.ReleaseEnemy(e);
-                _activeEnemyList.Remove(e);
-                e.OnHitEvent.RemoveAllListeners();
-            });
+
+            e.OnHitEvent.AddListener(() => EnemyReleaseEvent(e, _enemyPools[enemyType]));
+            e.OnClearEvent.AddListener(() => EnemyReleaseEvent(e, _enemyPools[enemyType]));
         }
 
+        void EnemyReleaseEvent(Enemy e, EnemyPool pool)
+        {
+            pool.ReleaseEnemy(e);
+            _activeEnemyList.Remove(e);
+        }
     }
 }

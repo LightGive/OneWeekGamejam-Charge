@@ -13,7 +13,6 @@ namespace OneWeekGamejam.Charge
         [SerializeField] float _angleMaxSpeed = 360.0f;
         [SerializeField] float _baseSpeed = 1.0f;
         [SerializeField] float _exp = 1.0f;
-        
 
         Transform _target = null;
         float _angleCurrent = 0.0f;
@@ -23,6 +22,7 @@ namespace OneWeekGamejam.Charge
 
         public float ExperiencePoint { get; private set; } = 0.0f;
         public UnityEvent OnHitEvent { get; private set; } = new UnityEvent();
+        public UnityEvent OnClearEvent { get; private set; } = new UnityEvent();
 
         public void SetActivate(Vector3 generatePos, Player player)
         {
@@ -92,6 +92,10 @@ namespace OneWeekGamejam.Charge
             });
 		}
 
+        public void Clear()
+		{
+            OnClearEvent?.Invoke();
+		}
 
 	}
 }
