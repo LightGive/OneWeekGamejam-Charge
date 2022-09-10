@@ -11,11 +11,21 @@ namespace OneWeekGamejam.Charge
     {
         [SerializeField] Button _buttonStart = null;
 		[SerializeField] SceneMain _sceneMain = null;
+		
+		[SerializeField] Slider _sliderVolumeBGM = null;
+		[SerializeField] Slider _sliderVolumeSE = null;
 
 		protected override void OnInit()
 		{
 			base.OnInit();
 			_buttonStart.onClick.AddListener(OnButtonDownStart);
+
+			_sliderVolumeBGM.value = 0.5f;
+			_sliderVolumeSE.value = 0.5f;
+			OnValueChangedBGMVolume(0.5f);
+			OnValueChangedSEVolume(0.5f);
+			_sliderVolumeBGM.onValueChanged.AddListener(OnValueChangedBGMVolume);
+			_sliderVolumeSE.onValueChanged.AddListener(OnValueChangedSEVolume);
 		}
 
 		protected override void OnShowBefore()
@@ -32,6 +42,16 @@ namespace OneWeekGamejam.Charge
 		void OnButtonDownStart()
 		{
 			_sceneMain.GameStart();
+		}
+
+		void OnValueChangedBGMVolume(float val)
+		{
+			BGMManager.Instance.ChangeBaseVolume(val);
+
+		}
+		void OnValueChangedSEVolume(float val)
+		{
+			SEManager.Instance.ChangeBaseVolume(val);
 		}
 	}
 }

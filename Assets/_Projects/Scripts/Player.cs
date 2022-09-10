@@ -186,6 +186,7 @@ namespace OneWeekGamejam.Charge
 		[SerializeField] float _stickAngleThresholdEnd = 0.2f;
 		[SerializeField] float _invisibleTime = 4.0f;
 
+		bool _canMove = false;
 		bool _isInvisible = false;
 		bool _isCharge = false;
 		int _level = 0;
@@ -215,6 +216,7 @@ namespace OneWeekGamejam.Charge
 			{
 				Charge.ChargeTimeCount();
 			}
+			if (!_canMove) { return; }
 			Move();
 			Aim();
 			CheckInvisible();
@@ -232,6 +234,7 @@ namespace OneWeekGamejam.Charge
 			HP.SetMax(StartHitPoint, false);
 			EXP.Init();
 			_collider.enabled = true;
+			_canMove = true;
 		}
 
 		void Aim()
