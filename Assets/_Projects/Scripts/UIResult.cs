@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using LightGive.UIUtil;
 using TMPro;
+using KanKikuchi.AudioManager;
 
 namespace OneWeekGamejam.Charge
 {
@@ -19,6 +20,12 @@ namespace OneWeekGamejam.Charge
 			base.OnInit();
 			_buttonRetry.onClick.AddListener(OnButtonDownRetry);
 			_buttonTitle.onClick.AddListener(OnButtonDownTitle);
+		}
+
+		protected override void OnShowBefore()
+		{
+			base.OnShowBefore();
+			SEManager.Instance.Play(SEPath.JINGLE_RESULT);
 		}
 
 		protected override void OnShowAfter()

@@ -47,5 +47,20 @@ namespace OneWeekGamejam.Charge
 			_timeObject.Resume();
 			onResumed?.Invoke();
 		}
+
+		public Coroutine WaitForSecoundsForObjectTime(float waitDuration)
+		{
+			return StartCoroutine(WaitForSecoundsForObjectTimeCoroutine(waitDuration));
+		}
+
+		IEnumerator WaitForSecoundsForObjectTimeCoroutine(float waitDuration)
+		{
+			var timeCnt = 0.0f;
+			while (timeCnt < waitDuration)
+			{
+				timeCnt += ObjectDeltaTime;
+				yield return null;
+			}
+		}
 	}
 }

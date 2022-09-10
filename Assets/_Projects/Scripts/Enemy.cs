@@ -54,7 +54,7 @@ namespace OneWeekGamejam.Charge
                 _angleCurrent += Mathf.PI * (off > 0 ? 2 : -2);
             }
             _angleCurrent = Mathf.SmoothDamp(_angleCurrent, a, ref _angleVelocity, _angleSmoothTime, _angleMaxSpeed);
-            _moveVec = new Vector2(Mathf.Cos(_angleCurrent), Mathf.Sin(_angleCurrent));
+            _moveVec = new Vector2(Mathf.Cos(_angleCurrent), Mathf.Sin(_angleCurrent)).normalized;
             _rigid.MovePosition((Vector3)_rigid.position + (Vector3)_moveVec * _baseSpeed * GameSystem.ObjectDeltaTime);
 
         }

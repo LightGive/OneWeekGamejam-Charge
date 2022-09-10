@@ -1,18 +1,19 @@
 using UnityEngine;
 using UnityEngine.Events;
+using KanKikuchi.AudioManager;
 
 namespace OneWeekGamejam.Charge
 {
 	public class Player : MonoBehaviour
 	{
-		public class HitPoint
+		public class PlayerHitPoint
 		{
 			public class OnHitpointChangedEvent : UnityEvent<int, int> { }
 			public OnHitpointChangedEvent OnHitpointChanged { get; private set; } = null;
 			public int Max { get; private set; }
 			public int Current { get; private set; }
 
-			public HitPoint(int current, int max)
+			public PlayerHitPoint(int current, int max)
 			{
 				OnHitpointChanged = new OnHitpointChangedEvent();
 				Current = current;
@@ -46,74 +47,10 @@ namespace OneWeekGamejam.Charge
 				OnHitpointChanged?.Invoke(Max, Current);
 			}
 		}
+
+
 		[System.Serializable]
-		public class ChargeInfo
-		{
-			public class OnChargeChangeEvent : UnityEvent<bool> { }
-			public class OnChargeLevelChangeEvent : UnityEvent<int> { }
-			public class OnChargeLevelMaxChangeEvent : UnityEvent<int> { }
-			int _chargeLevel = 0;
-			int _chargeLevelMax = 0;
-			[field: SerializeField] public float ChargeTimeOneLevel { get; private set; } = 0.5f;
-			public float ChargeTimeCnt { get; private set; } = 0.0f;
-			public int ChargeLevelMax 
-			{ 
-				get => _chargeLevelMax;
-				private set 
-				{
-					if(_chargeLevelMax == value) { return; }
-					_chargeLevelMax = value;
-					OnChargeLevelMaxChanged?.Invoke(value);
-				} 
-			}
-			public int ChargeLevel 
-			{
-				get => _chargeLevel; 
-				private set
-				{
-					if(_chargeLevel == value) { return; }
-					_chargeLevel = value;
-					OnChargeLevelChanged?.Invoke(value);
-				}
-			}
-			public OnChargeChangeEvent OnChargeChanged { get; private set; } = null;
-			public OnChargeLevelChangeEvent OnChargeLevelChanged { get; private set; } = null;
-			public OnChargeLevelMaxChangeEvent OnChargeLevelMaxChanged { get; private set; } = null;
-			public ChargeInfo()
-			{
-				ChargeTimeCnt = 0.0f;
-				ChargeLevel = 0;
-				ChargeLevelMax = 0;
-				OnChargeChanged = new OnChargeChangeEvent();
-				OnChargeLevelChanged = new OnChargeLevelChangeEvent();
-				OnChargeLevelMaxChanged = new OnChargeLevelMaxChangeEvent();
-			}
-
-			public void SetChargeMaxLevel(int chargeLevelMax)
-			{
-				ChargeLevelMax = chargeLevelMax;
-			}
-
-			public void ChargeTimeCount()
-			{
-				ChargeTimeCnt = Mathf.Clamp(ChargeTimeCnt + GameSystem.ObjectDeltaTime, 0.0f, ChargeLevelMax * ChargeTimeOneLevel);
-				ChargeLevel = Mathf.FloorToInt(ChargeTimeCnt / ChargeTimeOneLevel);
-			}
-
-			public void ResetChargeTime()
-			{
-				ChargeTimeCnt = 0.0f;
-			}
-
-			public void Init(int chargeLevelMax,int chargeLevel)
-			{
-				_chargeLevelMax = chargeLevelMax;
-				OnChargeLevelMaxChanged?.Invoke(chargeLevelMax);
-				_chargeLevel = chargeLevel;
-				OnChargeLevelChanged?.Invoke(chargeLevel);
-			}
-		}
-		public class Experience
+		public class PlayerExperiencePoint
 		{
 			const float NextExpMag = 1.04f;
 			const float StartMaxExp = 3.0f;
@@ -125,7 +62,7 @@ namespace OneWeekGamejam.Charge
 			public int Level { get; private set; }
 			public OnExperiencePointChangedEvent OnExperiencePointChanged { get; private set; } = null;
 			public OnLevelUpEvent OnLevelUped { get; private set; } = null;
-			public Experience()
+			public PlayerExperiencePoint()
 			{
 				OnExperiencePointChanged = new OnExperiencePointChangedEvent();
 				OnLevelUped = new OnLevelUpEvent();
@@ -170,10 +107,11 @@ namespace OneWeekGamejam.Charge
 		const string AnimParamNormal = "Normal";
 		const int MaxHitpoint = 4;
 		const int MaxChageMaxLevel = 4;
-		const int StartHitPoint = 3;
+		const int StartHitPoint = 1;
 		const int StartExperiencePoint = 3;
-		const int StartChageMaxLevel = 3;
+		const int StartChageMaxLevel = 2;
 
+		[SerializeField] SceneMain _sceneMain = null;
 		[SerializeField] Collider2D _collider = null;
 		[SerializeField] SpriteFlusher _spriteFlusher = null;
 		[SerializeField] BulletGenerator _bulletGenerator = null;
@@ -194,9 +132,9 @@ namespace OneWeekGamejam.Charge
 		float _invisibleTimeCnt = 0.0f;
 		(float target, float current, float velocity) _smoothAngle = (0.0f, 0.0f, 0.0f);
 
-		[field: SerializeField] public ChargeInfo Charge { get; private set; } = new ChargeInfo();
-		public HitPoint HP { get; private set; } = new HitPoint(StartHitPoint, StartHitPoint);
-		public Experience EXP { get; private set; } = new Experience();
+		[field: SerializeField] public PlayerChargeInfo Charge { get; private set; } = new PlayerChargeInfo();
+		[field: SerializeField] public PlayerHitPoint HP { get; private set; } = new PlayerHitPoint(StartHitPoint, StartHitPoint);
+		[field: SerializeField] public PlayerExperiencePoint EXP { get; private set; } = new PlayerExperiencePoint();
 
 		void Awake()
 		{
@@ -268,16 +206,17 @@ namespace OneWeekGamejam.Charge
 
 		void OnAimStart()
 		{
+			if (!_canMove) { return; }
 			_isCharge = true;
-			Charge.OnChargeChanged.Invoke(true);
+			Charge.ChargeStart();
 		}
 
 		void OnFire()
 		{
+			if (!_canMove) { return; }
 			_isCharge = false;
 			var level = Charge.ChargeLevel;
-			Charge.OnChargeChanged.Invoke(false);
-			Charge.ResetChargeTime();
+			Charge.ChargeStop();
 			if (level == 0) { return; }
 			_bulletGenerator.GeneratePlayerBullet(
 				level, 
@@ -298,11 +237,23 @@ namespace OneWeekGamejam.Charge
 			if (_isInvisible) { return; }
 			_isInvisible = true;
 
+			HP.SetCurrent(HP.Current - 1);
+			var isDead = HP.Current <= 0;
+			if (isDead)
+			{
+				Dead();
+				SEManager.Instance.Play(SEPath.PLAYER_DEAD);
+			}
+			else
+			{
+				SEManager.Instance.Play(SEPath.PLAYER_HIT);
+			}
+
 			// ƒJƒƒ‰U“®
 			var ranRad = Random.value * Mathf.PI * 2.0f;
 			var ranVec = new Vector3(Mathf.Cos(ranRad), Mathf.Sin(ranRad), 0.0f);
 			var cameraShakeDuration = 0.6f;
-			var cameraShakePower = 20;
+			var cameraShakePower = isDead ? 40 : 20;
 			GameSystem.Instance.ShakeCamera(
 				ranVec,
 				cameraShakeDuration,
@@ -315,11 +266,7 @@ namespace OneWeekGamejam.Charge
 			GameSystem.Instance.HitStop(0.4f, () =>
 			{
 				_anim.Play(AnimParamDamage);
-				HP.SetCurrent(HP.Current - 1);
-				if(HP.Current <= 0)
-				{
-					Dead();
-				}
+
 			});
 		}
 
@@ -340,7 +287,9 @@ namespace OneWeekGamejam.Charge
 
 		void Dead()
 		{
+			_canMove = false;
 			_collider.enabled = false;
+			Charge.ChargeCancel();
 		}
 	}
 }

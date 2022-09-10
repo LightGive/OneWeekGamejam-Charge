@@ -43,6 +43,7 @@ namespace OneWeekGamejam.Charge
 			_player.Charge.OnChargeChanged.AddListener(_UIChargeLevel.OnChargeChanged);
 			_player.Charge.OnChargeLevelChanged.AddListener(_UIChargeLevel.OnChargeLevelChanged);
 			_player.Charge.OnChargeLevelMaxChanged.AddListener(_UIChargeLevel.OnChargeLevelMaxChanged);
+			_player.Charge.OnChargeCanceled.AddListener(_UIChargeLevel.OnChargeCanceled);
 		}
 
 		protected override void OnShowBefore()

@@ -35,5 +35,10 @@ namespace OneWeekGamejam
 				_gages[i].gameObject.SetActive(i < value);
 			}
 		}
+
+		public void OnChargeCanceled()
+		{
+			_chargeUI.SetActive(false);
+		}
 	}
 }

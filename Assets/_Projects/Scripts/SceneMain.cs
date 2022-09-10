@@ -53,10 +53,16 @@ namespace OneWeekGamejam.Charge
 
 		void GameOver()
 		{
+			BGMManager.Instance.Stop();
 			_enemyGenerator.StopGenerate();
 			_UIResult.SetScore(ScoreData);
+			StartCoroutine(GameOverCoroutine());
+		}
+
+		IEnumerator GameOverCoroutine()
+		{
+			yield return GameSystem.Instance.WaitForSecoundsForObjectTime(1.0f);
 			_UIResult.Show();
-			
 		}
 
 		void OnHitPointChanged(int max, int current)
