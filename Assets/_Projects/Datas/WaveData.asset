@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: WaveData
   m_EditorClassIdentifier: 
   GenerateType: 0
-  SpeedMag: 10
+  Speed: 20
   MaxEnemyNum: 5

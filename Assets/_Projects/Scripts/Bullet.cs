@@ -10,7 +10,6 @@ namespace OneWeekGamejam.Charge
     {
         [SerializeField] Rigidbody2D _rigid = null;
         [SerializeField] SpriteRenderer _spRenderer = null;
-        [SerializeField] SEAssistant _seAssist = null;
         [SerializeField] bool isPenetration = false;
 
         float _speed = 0.0f;

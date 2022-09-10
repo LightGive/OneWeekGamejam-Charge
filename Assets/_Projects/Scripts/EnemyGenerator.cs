@@ -20,6 +20,7 @@ namespace OneWeekGamejam.Charge
 
         float _generateTimeCnt = 0.0f;
         float _waveTimeCnt  = 0.0f;
+        int _waveCnt = 0;
 
         public bool IsStartGenerate { get; private set; } = false;
 
@@ -30,7 +31,9 @@ namespace OneWeekGamejam.Charge
 
         void Update()
         {
+            if (!IsStartGenerate) { return; }
             CheckGenerate();
+            CheckWave();
         }
 
 		void OnDrawGizmos()
@@ -51,6 +54,7 @@ namespace OneWeekGamejam.Charge
 		{
             _currentWave = _waveData[0];
             _waveTimeCnt = 0.0f;
+            _waveCnt = 0;
 		}
 
         public void StartGenerate()
@@ -65,7 +69,6 @@ namespace OneWeekGamejam.Charge
 
         void CheckGenerate()
 		{
-			if (!IsStartGenerate) { return; }
             _generateTimeCnt += GameSystem.ObjectDeltaTime;
             if (_generateTimeCnt > _generateInterval)
             {
@@ -75,11 +78,11 @@ namespace OneWeekGamejam.Charge
 
 		void Generate()
         {
-            if (_activeEnemyList.Count >= _maxGenerateNum) { return; }
+            if (_activeEnemyList.Count >= _currentWave.MaxEnemyNum) { return; }
             var enemyType = (int)_currentWave.GenerateType;
             var e = _enemyPools[enemyType].Pool.Get();
             var p = _mainCamera.GetRandomPositionScreenOut(10.0f);
-            e.Generate(p, _player);
+            e.Generate(p, _player,_currentWave.Speed);
             _activeEnemyList.Add(e);
             _generateTimeCnt = 0.0f;
 
@@ -90,6 +93,15 @@ namespace OneWeekGamejam.Charge
             });
 
             e.OnCleared.AddListener(() => EnemyReleaseEvent(e, _enemyPools[enemyType]));
+        }
+
+        void CheckWave()
+        {
+            _waveTimeCnt += GameSystem.ObjectDeltaTime;
+            if (_waveTimeCnt <= _oneWaveTime) { return; }
+            _waveCnt++;
+            var idx = Mathf.Clamp(_waveCnt, 0, _waveData.Length - 1);
+            _currentWave = _waveData[idx];
         }
 
         void EnemyReleaseEvent(Enemy e, EnemyPool pool)

@@ -53,10 +53,11 @@ namespace OneWeekGamejam.Charge
             _rigid.MovePosition((Vector3)_rigid.position + (Vector3)_moveVec * _speed * GameSystem.ObjectDeltaTime);
         }
 
-        public void Generate(Vector3 generatePos, Player player)
+        public void Generate(Vector3 generatePos, Player player,float speed)
         {
             _hpCnt = _hp;
             _target = player.transform;
+            _speed = speed;
             _angleCurrent = GetTargetAngleRad();
             transform.position = generatePos;
             transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);

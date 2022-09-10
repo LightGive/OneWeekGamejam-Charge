@@ -2915,7 +2915,7 @@ MonoBehaviour:
   _player: {fileID: 1707348463}
   _maxGenerateNum: 100
   _oneWaveTime: 0
-  _generateInterval: 0.5
+  _generateInterval: 0.2
   _generateRange: 265.3
   _waveData:
   - {fileID: 11400000, guid: f00accc825922454aa10fdabfbb8c645, type: 2}
@@ -5039,6 +5039,7 @@ GameObject:
   - component: {fileID: 1707348462}
   - component: {fileID: 1707348463}
   - component: {fileID: 1707348466}
+  - component: {fileID: 1707348468}
   - component: {fileID: 1707348464}
   - component: {fileID: 1707348465}
   - component: {fileID: 1707348467}
@@ -5084,6 +5085,7 @@ MonoBehaviour:
   _spriteFlusher: {fileID: 318673409}
   _bulletGenerator: {fileID: 1584337953}
   _playerInput: {fileID: 1707348466}
+  _playerPowerUp: {fileID: 1707348468}
   _anim: {fileID: 1707348465}
   _moveSpeed: 30
   _smoothTimeAngle: 0.1
@@ -5096,7 +5098,7 @@ MonoBehaviour:
     _source: {fileID: 1707348467}
     _currentChargeInfo:
       <Pitch>k__BackingField: 0
-    <ChargeTimeOneLevel>k__BackingField: 0.4
+    <ChargeTimeOneLevel>k__BackingField: 0.7
     <ChargeInfos>k__BackingField:
     - <Pitch>k__BackingField: 0.4
     - <Pitch>k__BackingField: 0.8
@@ -5252,6 +5254,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1707348468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1707348461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c48a55de76aad74bab1885d52303052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1723749768
 GameObject:
   m_ObjectHideFlags: 0

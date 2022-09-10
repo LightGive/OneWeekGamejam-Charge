@@ -109,12 +109,14 @@ namespace OneWeekGamejam.Charge
 		const int StartHitPoint = 1;
 		const int StartExperiencePoint = 3;
 		const int StartChageMaxLevel = 3;
+		const float PlayerBulletSpeed = 300.0f;
 
 		[SerializeField] SceneMain _sceneMain = null;
 		[SerializeField] Collider2D _collider = null;
 		[SerializeField] SpriteFlusher _spriteFlusher = null;
 		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] PlayerInput _playerInput = null;
+		[SerializeField] PlayerPowerup _playerPowerUp = null;
 		[SerializeField] Animation _anim = null;
 		[SerializeField] float _moveSpeed = 1.0f;
 		[SerializeField] float _smoothTimeAngle = 360.0f;
@@ -221,7 +223,7 @@ namespace OneWeekGamejam.Charge
 			if (level == 0) { return; }
 			_bulletGenerator.GeneratePlayerBullet(
 				level - 1,
-				1000.0f,
+				PlayerBulletSpeed,
 				transform.up,
 				transform.position);
 		}

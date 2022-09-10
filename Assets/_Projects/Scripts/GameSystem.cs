@@ -20,6 +20,7 @@ namespace OneWeekGamejam.Charge
 
 		void Start()
 		{
+			Application.targetFrameRate = 60;
 			_timeGameSystem = TimeController.Instance.CreateTimeGroup("GameSystem", TimeController.Instance.GlobalTimeGroup);
 			_timeObject = TimeController.Instance.CreateTimeGroup("Object", _timeGameSystem);
 		}

@@ -12,7 +12,7 @@ namespace OneWeekGamejam.Charge
             Ufo = 0,
         }
         [SerializeField] public EnemyType GenerateType;
-        [SerializeField] public float SpeedMag = 10;
+        [SerializeField] public float Speed = 10;
         [SerializeField] public int MaxEnemyNum = 5;
     }
 }
