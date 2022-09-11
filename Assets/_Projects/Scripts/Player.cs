@@ -12,7 +12,7 @@ namespace OneWeekGamejam.Charge
 			public OnHitpointChangedEvent OnHitpointChanged { get; private set; } = null;
 			public int Max { get; private set; }
 			public int Current { get; private set; }
-
+			public bool IsFullHP => Current >= Max;
 			public PlayerHitPoint(int current, int max)
 			{
 				OnHitpointChanged = new OnHitpointChangedEvent();
@@ -53,7 +53,7 @@ namespace OneWeekGamejam.Charge
 		public class PlayerExperiencePoint
 		{
 			const float NextExpMag = 1.04f;
-			const float StartMaxExp = 3.0f;
+			const float StartMaxExp = 10.0f;
 
 			public class OnLevelUpEvent:UnityEvent<int> { }
 			public class OnExperiencePointChangedEvent : UnityEvent<int, float,float> { }
@@ -74,6 +74,7 @@ namespace OneWeekGamejam.Charge
 			public void AddExperiencePoint(float exp)
 			{
 				var expCount = exp;
+				var preLevel = Level;
 				while (expCount >= Max - Current)
 				{
 					expCount -= Max - Current;
@@ -94,6 +95,11 @@ namespace OneWeekGamejam.Charge
 					Level,
 					Mathf.Clamp01(preCurrent / Max),
 					Mathf.Clamp01(Current / Max));
+				var upLevel = Level - preLevel;
+				if (upLevel > 0)
+				{
+					OnLevelUped?.Invoke(upLevel);
+				}
 			}
 
 			public void Init()
@@ -102,13 +108,14 @@ namespace OneWeekGamejam.Charge
 				Level = 1;
 			}
 		}
+		public const int MaxChargeMaxLevel = 4;
+		public const int MaxHitpoint = 4;
 
 		const string AnimParamDamage = "Damage";
 		const string AnimParamNormal = "Normal";
-		const int MaxHitpoint = 4;
-		const int StartHitPoint = 1;
+		const int StartHitPoint = 2;
 		const int StartExperiencePoint = 3;
-		const int StartChageMaxLevel = 3;
+		const int StartChageMaxLevel = 2;
 		const float PlayerBulletSpeed = 300.0f;
 
 		[SerializeField] SceneMain _sceneMain = null;
@@ -116,7 +123,6 @@ namespace OneWeekGamejam.Charge
 		[SerializeField] SpriteFlusher _spriteFlusher = null;
 		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] PlayerInput _playerInput = null;
-		[SerializeField] PlayerPowerup _playerPowerUp = null;
 		[SerializeField] Animation _anim = null;
 		[SerializeField] float _moveSpeed = 1.0f;
 		[SerializeField] float _smoothTimeAngle = 360.0f;
@@ -124,15 +130,15 @@ namespace OneWeekGamejam.Charge
 		[SerializeField] float _stickAngleThresholdStart = 0.5f;
 		[SerializeField] float _stickAngleThresholdEnd = 0.2f;
 		[SerializeField] float _invisibleTime = 4.0f;
+		[SerializeField] float _speedUpOneLevel = 4.0f;
 
 		bool _canMove = false;
 		bool _isInvisible = false;
 		bool _isCharge = false;
-		int _level = 0;
-		float _exp = 0.0f;
+		int _chargeSpeedLevel = 0;
 		float _invisibleTimeCnt = 0.0f;
 		(float target, float current, float velocity) _smoothAngle = (0.0f, 0.0f, 0.0f);
-
+		[field: SerializeField] public PlayerPowerup PlayerPowerUp { get; private set; } = null;
 		[field: SerializeField] public PlayerChargeInfo Charge { get; private set; } = new PlayerChargeInfo();
 		[field: SerializeField] public PlayerHitPoint HP { get; private set; } = new PlayerHitPoint(StartHitPoint, StartHitPoint);
 		[field: SerializeField] public PlayerExperiencePoint EXP { get; private set; } = new PlayerExperiencePoint();
@@ -169,7 +175,8 @@ namespace OneWeekGamejam.Charge
 
 		public void GameStart()
 		{
-			_level = 0;
+			_chargeSpeedLevel = 0;
+
 			HP.SetCurrent(StartHitPoint);
 			HP.SetMax(StartHitPoint, false);
 			Charge.Init(StartChageMaxLevel, 0);
@@ -200,9 +207,9 @@ namespace OneWeekGamejam.Charge
 
 		void Move()
 		{
-			transform.position += 
-				_playerInput.VecMove * 
-				_moveSpeed * 
+			transform.position +=
+				_playerInput.VecMove *
+				(_moveSpeed + (_speedUpOneLevel * PlayerPowerUp.SpeedLevel)) *
 				GameSystem.ObjectDeltaTime;
 
 		}

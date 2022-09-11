@@ -13,6 +13,7 @@ namespace OneWeekGamejam.Charge
 		[SerializeField] SceneMain _sceneMain = null;
 		[SerializeField] Slider _sliderVolumeBGM = null;
 		[SerializeField] Slider _sliderVolumeSE = null;
+		[SerializeField] Player _player = null;
 		bool _canGameStart = false;
 
 		protected override void OnInit()
@@ -55,6 +56,7 @@ namespace OneWeekGamejam.Charge
 		}
 		void OnValueChangedSEVolume(float val)
 		{
+			_player.Charge.ChangeSEVolume(val);
 			SEManager.Instance.ChangeBaseVolume(val);
 		}
 	}

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed9e213c73c0beb48b151b3e2673b8d9, type: 3}
-  m_Name: WaveData
+  m_Name: WaveData1
   m_EditorClassIdentifier: 
   GenerateType: 0
-  Speed: 20
-  MaxEnemyNum: 5
+  Speed: 25
+  MaxEnemyNum: 8

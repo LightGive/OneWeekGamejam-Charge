@@ -11,7 +11,7 @@ namespace OneWeekGamejam.Charge
 		public static float GameSystemDeltaTime => Instance._timeGameSystem.DeltaTime;
 		public static float ObjectDeltaTime => Instance._timeObject.DeltaTime;
 		public static float ObjectTimeScale => Instance._timeObject.TimeScale;
-		public static bool IsStartGame => Instance._isGameStart;
+		public static bool IsPausingObjectTime => Instance._timeObject.TimeScale <= 0.0f;
 
 		[SerializeField] CinemachineImpulseSource _cinemachineImpulseSource = null;
 		TimeGroup _timeGameSystem = null;
@@ -39,6 +39,16 @@ namespace OneWeekGamejam.Charge
 		public void HitStop(float stopTime, UnityAction onResumed = null)
 		{
 			StartCoroutine(HitStopCoroutine(stopTime, onResumed));
+		}
+
+		public void Pause()
+		{
+			_timeObject.Pause();
+		}
+
+		public void Resume()
+		{
+			_timeObject.Resume();
 		}
 
 		IEnumerator HitStopCoroutine(float stopTime, UnityAction onResumed)

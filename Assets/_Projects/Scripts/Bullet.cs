@@ -17,7 +17,6 @@ namespace OneWeekGamejam.Charge
         public UnityEvent OnHitDestroy { get; private set; } = new UnityEvent();
         public UnityEvent OnCleared { get; private set; } = new UnityEvent();
 
-
         void Update()
 		{
             _rigid.MovePosition((Vector3)_rigid.position + transform.up * _speed * GameSystem.ObjectDeltaTime);
@@ -32,7 +31,6 @@ namespace OneWeekGamejam.Charge
             }
             result.Hit(transform.up);
             Hit();
-            
         }
 
         public void Generate(float speed, float angle, Vector3 pos)
@@ -50,6 +48,7 @@ namespace OneWeekGamejam.Charge
                 OnHitDestroy?.Invoke();
 			}
 		}
+
         public void Clear()
         {
             OnCleared?.Invoke();

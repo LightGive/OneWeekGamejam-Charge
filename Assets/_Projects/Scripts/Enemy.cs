@@ -13,7 +13,6 @@ namespace OneWeekGamejam.Charge
         [SerializeField] float _angleSmoothTime = 1.0f;
         [SerializeField] float _angleMaxSpeed = 360.0f;
         [SerializeField] float _speed = 20.0f;
-        [SerializeField] float _exp = 1.0f;
         [SerializeField] int _hp = 1;
         [field: SerializeField] public float ExperiencePoint { get; private set; } = 1.0f;
 

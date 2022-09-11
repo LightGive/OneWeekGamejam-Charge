@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using KanKikuchi.AudioManager;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -20,6 +21,7 @@ namespace OneWeekGamejam.Charge
 		public class OnChargeLevelChangeEvent : UnityEvent<int> { }
 		public class OnChargeLevelMaxChangeEvent : UnityEvent<int> { }
 
+		[SerializeField] Player _player = null;
 		[SerializeField] Animator _anim = null;
 		[SerializeField] AudioSource _source = null;
 		[SerializeField] ChargeInfo _currentChargeInfo = null;
@@ -28,6 +30,7 @@ namespace OneWeekGamejam.Charge
 
 
 		[field: SerializeField] public float ChargeTimeOneLevel { get; private set; } = 0.5f;
+		[field: SerializeField] public float ShortenChargeSpeedRateMax { get; private set; } = 2.0f;
 		[field: SerializeField] public ChargeInfo[] ChargeInfos { get; private set; } = new ChargeInfo[5];
 		public float ChargeTimeCnt { get; private set; } = 0.0f;
 		public int ChargeLevelMax
@@ -46,7 +49,7 @@ namespace OneWeekGamejam.Charge
 			private set
 			{
 				if (_chargeLevel == value) { return; }
-				ChanrgeChargeLevel(value);
+				ChangeChargeLevel(value);
 			}
 		}
 		public UnityEvent OnChargeCanceled { get; private set; } = null;
@@ -74,6 +77,11 @@ namespace OneWeekGamejam.Charge
 			_anim.gameObject.SetActive(false);
 		}
 
+		public void ChangeSEVolume(float value)
+		{
+			_source.volume = value;
+		}
+
 		public void SetChargeMaxLevel(int chargeLevelMax)
 		{
 			ChargeLevelMax = chargeLevelMax;
@@ -81,7 +89,7 @@ namespace OneWeekGamejam.Charge
 
 		public void ChargeStart()
 		{
-			ChanrgeChargeLevel(0);
+			ChangeChargeLevel(0);
 			_anim.gameObject.SetActive(true);
 			_source.Play();
 			OnChargeChanged.Invoke(true);
@@ -89,7 +97,7 @@ namespace OneWeekGamejam.Charge
 
 		public void ChargeStop()
 		{
-			ChanrgeChargeLevel(0);
+			ChangeChargeLevel(0);
 			_anim.gameObject.SetActive(false);
 			_source.Stop();
 			ChargeTimeCnt = 0.0f;
@@ -98,7 +106,7 @@ namespace OneWeekGamejam.Charge
 
 		public void ChargeCancel()
 		{
-			ChanrgeChargeLevel(0);
+			ChangeChargeLevel(0);
 			_anim.gameObject.SetActive(false);
 			_source.Stop();
 			ChargeTimeCnt = 0.0f;
@@ -107,21 +115,25 @@ namespace OneWeekGamejam.Charge
 
 		public void ChargeTimeCount()
 		{
-			ChargeTimeCnt = Mathf.Clamp(ChargeTimeCnt + GameSystem.ObjectDeltaTime, 0.0f, ChargeLevelMax * ChargeTimeOneLevel);
+			var speedMag = Mathf.Lerp(1, ShortenChargeSpeedRateMax, _player.PlayerPowerUp.ChargeSpeedPercent);
+			ChargeTimeCnt = Mathf.Clamp(
+				ChargeTimeCnt + GameSystem.ObjectDeltaTime * speedMag,
+				0.0f,
+				ChargeLevelMax * ChargeTimeOneLevel);
+
 			ChargeLevel = Mathf.FloorToInt(ChargeTimeCnt / ChargeTimeOneLevel);
 			var scale = Mathf.Clamp01(ChargeTimeCnt / (ChargeTimeOneLevel * MaxChageMaxLevel));
 			_anim.transform.localScale = new Vector3(scale, scale, scale);
 		}
 
 
-		void ChanrgeChargeLevel(int level)
+		void ChangeChargeLevel(int level)
 		{
 			_chargeLevel = level;
 			_anim.SetInteger(AnimParamIntChargeLevel, level);
 			_currentChargeInfo = ChargeInfos[level];
 			_source.pitch = _currentChargeInfo.Pitch;
 			OnChargeLevelChanged?.Invoke(level);
-
 		}
 	}
 }

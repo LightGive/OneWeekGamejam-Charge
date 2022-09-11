@@ -202,8 +202,7 @@ MonoBehaviour:
   _spriteFlusher: {fileID: 2654096661931292323}
   _angleSmoothTime: 1
   _angleMaxSpeed: 360
-  _baseSpeed: 120
-  _exp: 1
+  _speed: 20
   _hp: 1
   <ExperiencePoint>k__BackingField: 1
 --- !u!50 &4246715117701138691

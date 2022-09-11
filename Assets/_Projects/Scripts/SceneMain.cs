@@ -11,6 +11,7 @@ namespace OneWeekGamejam.Charge
 		[SerializeField] UIMain _UIMain = null;
 		[SerializeField] UIResult _UIResult = null;
 		[SerializeField] EnemyGenerator _enemyGenerator = null;
+		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] Player _player = null;
 
 		public ScoreData ScoreData { get; private set; } = null;
@@ -55,6 +56,7 @@ namespace OneWeekGamejam.Charge
 		{
 			BGMManager.Instance.Stop();
 			_enemyGenerator.StopGenerate();
+			_bulletGenerator.ClearGenerateBullet();
 			_UIResult.SetScore(ScoreData);
 			StartCoroutine(GameOverCoroutine());
 		}
@@ -78,7 +80,6 @@ namespace OneWeekGamejam.Charge
 
 		IEnumerator GameOverCoroutine()
 		{
-			Debug.Log("GameOverCoroutine");
 			yield return GameSystem.Instance.WaitForSecoundsForObjectTime(1.0f);
 			_UIResult.Show();
 		}

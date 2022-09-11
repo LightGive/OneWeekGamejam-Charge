@@ -8,6 +8,7 @@ namespace OneWeekGamejam.Charge
     {
         [SerializeField] EnemyPool[] _enemyPools = null;
         [SerializeField] MainCamera _mainCamera = null;
+        [SerializeField] UIWave _UIWave = null;
         [SerializeField] Player _player = null;
         [SerializeField] int _maxGenerateNum = 3;
         [SerializeField] float _oneWaveTime = 0.0f;
@@ -99,9 +100,13 @@ namespace OneWeekGamejam.Charge
         {
             _waveTimeCnt += GameSystem.ObjectDeltaTime;
             if (_waveTimeCnt <= _oneWaveTime) { return; }
+            if((_waveCnt +1) >= _waveData.Length) { return; }
+
+            _waveTimeCnt = 0.0f;
             _waveCnt++;
             var idx = Mathf.Clamp(_waveCnt, 0, _waveData.Length - 1);
             _currentWave = _waveData[idx];
+            _UIWave.SetWave(_waveCnt + 1);
         }
 
         void EnemyReleaseEvent(Enemy e, EnemyPool pool)
