@@ -5,6 +5,7 @@
 /// </summary>
 public static class SEPath{
 
+	public const string CANCEL                = "SE/Cancel";
 	public const string ENEMY_BOSS_DEAD       = "SE/EnemyBossDead";
 	public const string ENEMY_HIT             = "SE/EnemyHit";
 	public const string JINGLE_RESULT         = "SE/Jingle/JingleResult";
@@ -15,11 +16,11 @@ public static class SEPath{
 	public const string PLAYER_CHARGE_LOOP    = "SE/PlayerChargeLoop";
 	public const string PLAYER_DEAD           = "SE/PlayerDead";
 	public const string PLAYER_HIT            = "SE/PlayerHit";
-	public const string PLAYER_POWERUP        = "SE/PlayerPowerup";
 	public const string PLAYER_SHOT1          = "SE/PlayerShot1";
 	public const string PLAYER_SHOT2          = "SE/PlayerShot2";
 	public const string PLAYER_SHOT3          = "SE/PlayerShot3";
 	public const string PLAYER_SHOT4          = "SE/PlayerShot4";
+	public const string POWERUP               = "SE/Powerup";
 
 }
 

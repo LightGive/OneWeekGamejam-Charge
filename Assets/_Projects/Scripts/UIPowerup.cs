@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using LightGive.UIUtil;
 using UnityEngine.UI;
+using KanKikuchi.AudioManager;
 
 namespace OneWeekGamejam.Charge 
 {
@@ -65,12 +66,15 @@ namespace OneWeekGamejam.Charge
 
 		void OnButtonDownPowerup(PlayerPowerupType powerupType)
 		{
+			SEManager.Instance.Play(SEPath.POWERUP);
 			_playerPowerup.OnPowerup(powerupType);
 			_powerupCnt--;
 			if (_powerupCnt <= 0)
 			{
-				Hide();
-				GameSystem.Instance.Resume();
+				Hide(onHideAfter: () =>
+				 {
+					 GameSystem.Instance.Resume();
+				 });
 				return;
 			}
 			SetButton();
@@ -78,8 +82,11 @@ namespace OneWeekGamejam.Charge
 
 		void OnButtonDownNotPowerup()
 		{
-			Hide();
-			GameSystem.Instance.Resume();
+			SEManager.Instance.Play(SEPath.CANCEL);
+			Hide(onHideAfter: () =>
+			{
+				GameSystem.Instance.Resume();
+			});
 		}
 	}
 }

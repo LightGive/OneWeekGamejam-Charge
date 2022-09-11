@@ -8,14 +8,16 @@ namespace OneWeekGamejam.Charge
 {
     public class Bullet : MonoBehaviour
     {
+        public class OnHitEvent : UnityEvent<int> { }
         [SerializeField] Rigidbody2D _rigid = null;
         [SerializeField] SpriteRenderer _spRenderer = null;
         [SerializeField] bool isPenetration = false;
 
         float _speed = 0.0f;
-        public UnityEvent OnHitEvent { get; private set; } = new UnityEvent();
+        public OnHitEvent OnHited { get; private set; } = new OnHitEvent();
         public UnityEvent OnHitDestroy { get; private set; } = new UnityEvent();
         public UnityEvent OnCleared { get; private set; } = new UnityEvent();
+        int _addScore = 0;
 
         void Update()
 		{
@@ -38,11 +40,13 @@ namespace OneWeekGamejam.Charge
             _speed = speed;
             transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);
             transform.position = pos;
+            _addScore = 0;
         }
 
         public void Hit()
 		{
-            OnHitEvent?.Invoke();
+            _addScore++;
+            OnHited?.Invoke(_addScore);
             if (!isPenetration)
 			{
                 OnHitDestroy?.Invoke();
