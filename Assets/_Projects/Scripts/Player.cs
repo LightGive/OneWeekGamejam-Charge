@@ -208,7 +208,7 @@ namespace OneWeekGamejam.Charge
 		void Move()
 		{
 			transform.position +=
-				_playerInput.VecMove *
+				transform.up*
 				(_moveSpeed + (_speedUpOneLevel * PlayerPowerUp.SpeedLevel)) *
 				GameSystem.ObjectDeltaTime;
 
