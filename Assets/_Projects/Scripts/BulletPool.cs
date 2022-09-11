@@ -37,7 +37,7 @@ namespace OneWeekGamejam.Charge
         public void ReleaseBullet(Bullet obj)
         {
             Pool.Release(obj);
-            obj.OnHitEvent.RemoveAllListeners();
+            obj.OnHited.RemoveAllListeners();
             obj.OnHitDestroy.RemoveAllListeners();
             obj.OnCleared.RemoveAllListeners();
         }

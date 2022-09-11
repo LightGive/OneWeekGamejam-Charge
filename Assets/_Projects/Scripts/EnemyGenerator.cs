@@ -37,12 +37,6 @@ namespace OneWeekGamejam.Charge
             CheckWave();
         }
 
-		void OnDrawGizmos()
-		{
-            Gizmos.color = Color.white;
-            Gizmos.DrawWireSphere(Vector3.zero, _generateRange);
-		}
-
         public void ClearGenerateEnemy()
 		{
             for (var i = _activeEnemyList.Count - 1; i >= 0; i--)

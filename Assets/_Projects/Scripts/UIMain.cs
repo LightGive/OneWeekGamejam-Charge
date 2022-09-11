@@ -28,6 +28,8 @@ namespace OneWeekGamejam.Charge
 		[SerializeField] Sprite _hpFull = null;
 		[SerializeField] Sprite _hpEmpty = null;
 
+		[SerializeField] TextMeshProUGUI _textScoreValue = null;
+
 		public OnAddExpEvent OnAddExp { get; private set; } = null;
 
 		Dictionary<int, Tuple<float, float>> _expBarUpDic = null;
@@ -45,7 +47,6 @@ namespace OneWeekGamejam.Charge
 			_player.Charge.OnChargeLevelMaxChanged.AddListener(_UIChargeLevel.OnChargeLevelMaxChanged);
 			_player.Charge.OnChargeCanceled.AddListener(_UIChargeLevel.OnChargeCanceled);
 		}
-
 
 		protected override void OnShowAfter()
 		{
@@ -70,6 +71,11 @@ namespace OneWeekGamejam.Charge
 			{
 				StopCoroutine(_expBarCoroutine);
 			}
+		}
+
+		public void SetScore(int score)
+		{
+			_textScoreValue.text = score.ToString("0");
 		}
 
 		void OnHitpointChanged(int max, int current)

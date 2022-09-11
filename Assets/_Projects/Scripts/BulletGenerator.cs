@@ -9,6 +9,7 @@ namespace OneWeekGamejam.Charge
     public class BulletGenerator : MonoBehaviour
     {
         [SerializeField] BulletPool[] _bulletPools = null;
+        [SerializeField] ScoreController _scoreController = null;
         [SerializeField] MainCamera _mainCamera = null;
         List<Bullet> _activeBulletList = null;
 
@@ -45,6 +46,10 @@ namespace OneWeekGamejam.Charge
             bullet.OnCleared.AddListener(() => 
             {
                 EnemyReleaseEvent(bullet, _bulletPools[level]);
+            });
+            bullet.OnHited.AddListener((hitCount) =>
+            {
+                _scoreController.AddScore(hitCount, bullet.transform.position);
             });
         }
 
