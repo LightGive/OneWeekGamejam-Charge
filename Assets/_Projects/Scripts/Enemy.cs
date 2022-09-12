@@ -10,6 +10,7 @@ namespace OneWeekGamejam.Charge
     {
         [SerializeField] Rigidbody2D _rigid;
         [SerializeField] SpriteFlusher _spriteFlusher = null;
+        [SerializeField] SpriteRenderer _spriteRenderer = null;
         [SerializeField] float _angleSmoothTime = 1.0f;
         [SerializeField] float _angleMaxSpeed = 360.0f;
         [SerializeField] float _speed = 20.0f;
@@ -52,15 +53,17 @@ namespace OneWeekGamejam.Charge
             _rigid.MovePosition((Vector3)_rigid.position + (Vector3)_moveVec * _speed * GameSystem.ObjectDeltaTime);
         }
 
-        public void Generate(Vector3 generatePos, Player player,float speed)
+        public void Generate(Vector3 generatePos, Player player,float speed,float angleSmoothTime,Color enemyColor)
         {
             _hpCnt = _hp;
             _target = player.transform;
+            _angleSmoothTime = angleSmoothTime;
             _speed = speed;
             _angleCurrent = GetTargetAngleRad();
             transform.position = generatePos;
             transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
             _spriteFlusher.ResetFlush();
+            _spriteRenderer.color = enemyColor;
         }
 
         public void Damage(Vector3 vec)

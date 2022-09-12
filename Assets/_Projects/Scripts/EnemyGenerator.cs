@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using KanKikuchi.AudioManager;
 using UnityEngine;
 
 namespace OneWeekGamejam.Charge
@@ -33,8 +34,9 @@ namespace OneWeekGamejam.Charge
         void Update()
         {
             if (!IsStartGenerate) { return; }
-            CheckGenerate();
+            CheckDespone();
             CheckWave();
+            CheckGenerate();
         }
 
         public void ClearGenerateEnemy()
@@ -62,6 +64,18 @@ namespace OneWeekGamejam.Charge
             IsStartGenerate = false;
 		}
 
+        void CheckDespone()
+		{
+            for (var i = _activeEnemyList.Count - 1; i >= 0; i--)
+            {
+                var target = _activeEnemyList[i];
+                if (_mainCamera.IsScreenOut(target.transform.position, 50))
+                {
+                    target.Clear();
+                }
+            }
+        }
+
         void CheckGenerate()
 		{
             _generateTimeCnt += GameSystem.ObjectDeltaTime;
@@ -77,7 +91,7 @@ namespace OneWeekGamejam.Charge
             var enemyType = (int)_currentWave.GenerateType;
             var e = _enemyPools[enemyType].Pool.Get();
             var p = _mainCamera.GetRandomPositionScreenOut(10.0f);
-            e.Generate(p, _player,_currentWave.Speed);
+            e.Generate(p, _player, _currentWave.Speed, _currentWave.AngleSmoothTime, _currentWave.EnemyColor);
             _activeEnemyList.Add(e);
             _generateTimeCnt = 0.0f;
 
@@ -101,6 +115,15 @@ namespace OneWeekGamejam.Charge
             var idx = Mathf.Clamp(_waveCnt, 0, _waveData.Length - 1);
             _currentWave = _waveData[idx];
             _UIWave.SetWave(_waveCnt + 1);
+
+            if (_waveCnt % 4 == 0)
+            {
+                BGMSwitcher.CrossFade(BGMPath.BOSS, 0.5f);
+            }
+            else if (_waveCnt % 4 == 1 && _waveCnt != 1)
+            {
+                BGMSwitcher.CrossFade(BGMPath.MAIN1, 0.5f);
+            }
         }
 
         void EnemyReleaseEvent(Enemy e, EnemyPool pool)

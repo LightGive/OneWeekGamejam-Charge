@@ -5,6 +5,7 @@
 /// </summary>
 public static class BGMPath{
 
+	public const string BOSS   = "BGM/Boss";
 	public const string MAIN1  = "BGM/Main1";
 	public const string TITLE1 = "BGM/Title1";
 	public const string TITLE2 = "BGM/Title2";

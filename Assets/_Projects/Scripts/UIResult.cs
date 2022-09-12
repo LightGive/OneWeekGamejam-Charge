@@ -34,9 +34,9 @@ namespace OneWeekGamejam.Charge
 			_sceneMain.Prepare();
 		}
 
-		public void SetScore(ScoreData scoreData)
+		public void SetScore(int score)
 		{
-			_textScore.text = scoreData.Score.ToString();
+			_textScore.text = score.ToString();
 		}
 
 		void OnButtonDownTitle()

@@ -124,6 +124,7 @@ namespace OneWeekGamejam.Charge
 		[SerializeField] BulletGenerator _bulletGenerator = null;
 		[SerializeField] PlayerInput _playerInput = null;
 		[SerializeField] Animation _anim = null;
+		[SerializeField] Rigidbody2D _rigid = null;
 		[SerializeField] float _moveSpeed = 1.0f;
 		[SerializeField] float _smoothTimeAngle = 360.0f;
 		[SerializeField] float _smoothMaxSpeedAngle = 1.0f;
@@ -135,7 +136,6 @@ namespace OneWeekGamejam.Charge
 		bool _canMove = false;
 		bool _isInvisible = false;
 		bool _isCharge = false;
-		int _chargeSpeedLevel = 0;
 		float _invisibleTimeCnt = 0.0f;
 		(float target, float current, float velocity) _smoothAngle = (0.0f, 0.0f, 0.0f);
 		[field: SerializeField] public PlayerPowerup PlayerPowerUp { get; private set; } = null;
@@ -167,22 +167,21 @@ namespace OneWeekGamejam.Charge
 			CheckInvisible();
 		}
 
-		void OnTriggerEnter2D(Collider2D col)
+		private void OnCollisionEnter2D(Collision2D col)
 		{
-			if (col.tag != TagName.Enemy) { return; }
+			if (col.gameObject.tag != TagName.Enemy) { return; }
 			Damage();
 		}
 
 		public void GameStart()
 		{
-			_chargeSpeedLevel = 0;
-
 			HP.SetCurrent(StartHitPoint);
 			HP.SetMax(StartHitPoint, false);
 			Charge.Init(StartChageMaxLevel, 0);
 			EXP.Init();
 			_collider.enabled = true;
 			_canMove = true;
+			_rigid.bodyType = RigidbodyType2D.Dynamic;
 		}
 
 		void Aim()
@@ -190,7 +189,11 @@ namespace OneWeekGamejam.Charge
 			// deltaTimeに0を設定してSmoothDampAngleを実行すると以下のアサートを吐くため
 			// ポーズしている時は角度を変える処理を通さないように
 			// Assertion failed on expression: 'CompareApproximately(SqrMagnitude(result), 1.0F)'
-			if (GameSystem.ObjectTimeScale <= 0.0f) { return; }
+			if (GameSystem.ObjectTimeScale <= 0.0f ||
+				GameSystem.GameSystemTimeScale <= 0.0f)
+			{
+				return;
+			}
 
 			// 自キャラの向きを変える
 			var vec = _playerInput.VecDir;
@@ -202,16 +205,18 @@ namespace OneWeekGamejam.Charge
 					ref _smoothAngle.velocity,
 					_smoothTimeAngle,
 					_smoothMaxSpeedAngle);
-			transform.localRotation = Quaternion.Euler(0.0f, 0.0f, _smoothAngle.current);
+			
+			var rot = Quaternion.Euler(0.0f, 0.0f, _smoothAngle.current);
+			_rigid.MoveRotation(rot);
 		}
 
 		void Move()
 		{
-			transform.position +=
-				transform.up*
+			_rigid.velocity =
+				(Vector2)transform.up *
 				(_moveSpeed + (_speedUpOneLevel * PlayerPowerUp.SpeedLevel)) *
-				GameSystem.ObjectDeltaTime;
-
+				GameSystem.ObjectDeltaTime *
+				(_canMove ? 1.0f : 0.0f);
 		}
 
 		void OnAimStart()
@@ -241,7 +246,6 @@ namespace OneWeekGamejam.Charge
 		void Damage()
 		{
 			if (_isInvisible) { return; }
-			_isInvisible = true;
 
 			HP.SetCurrent(HP.Current - 1);
 			var isDead = HP.Current <= 0;
@@ -252,6 +256,7 @@ namespace OneWeekGamejam.Charge
 			}
 			else
 			{
+				_isInvisible = true;
 				SEManager.Instance.Play(SEPath.PLAYER_HIT);
 			}
 
@@ -271,8 +276,10 @@ namespace OneWeekGamejam.Charge
 			// ヒットストップ
 			GameSystem.Instance.HitStop(0.4f, () =>
 			{
-				_anim.Play(AnimParamDamage);
-
+				if (!isDead)
+				{
+					_anim.Play(AnimParamDamage);
+				}
 			});
 		}
 
@@ -296,6 +303,9 @@ namespace OneWeekGamejam.Charge
 			_canMove = false;
 			_collider.enabled = false;
 			Charge.ChargeCancel();
+			_rigid.bodyType = RigidbodyType2D.Kinematic;
+			_rigid.velocity = Vector2.zero;
+			_rigid.angularVelocity = 0.0f;
 		}
 	}
 }

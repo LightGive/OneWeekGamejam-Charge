@@ -29,9 +29,9 @@ MonoBehaviour:
   _isAutoUpdateBGMSetting: 1
   _isAutoUpdateSESetting: 1
   _forceToMonoForBGM: 1
-  _forceToMonoForSE: 1
+  _forceToMonoForSE: 0
   _normalizeForBGM: 1
-  _normalizeForSE: 1
+  _normalizeForSE: 0
   _ambisonicForBGM: 0
   _ambisonicForSE: 0
   _loadInBackgroundForBGM: 0

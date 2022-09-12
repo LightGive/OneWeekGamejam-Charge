@@ -8,9 +8,16 @@ namespace OneWeekGamejam.Charge
 {
 	public class GameSystem : SingletonMonoBehaviour<GameSystem>
 	{
+		public enum TimeType
+		{
+			GameSystemTime,
+			ObjectTime
+		}
 		public static float GameSystemDeltaTime => Instance._timeGameSystem.DeltaTime;
+		public static float GameSystemTimeScale => Instance._timeGameSystem.TimeScale;
 		public static float ObjectDeltaTime => Instance._timeObject.DeltaTime;
 		public static float ObjectTimeScale => Instance._timeObject.TimeScale;
+
 		public static bool IsPausingObjectTime => Instance._timeObject.TimeScale <= 0.0f;
 
 		[SerializeField] CinemachineImpulseSource _cinemachineImpulseSource = null;
@@ -41,14 +48,30 @@ namespace OneWeekGamejam.Charge
 			StartCoroutine(HitStopCoroutine(stopTime, onResumed));
 		}
 
-		public void Pause()
+		public void Pause(TimeType timeType)
 		{
-			_timeObject.Pause();
+			switch (timeType)
+			{
+				case TimeType.GameSystemTime:
+					_timeGameSystem.Pause();
+					break;
+				case TimeType.ObjectTime:
+					_timeObject.Pause();
+					break;
+			}
 		}
 
-		public void Resume()
+		public void Resume(TimeType timeType)
 		{
-			_timeObject.Resume();
+			switch (timeType)
+			{
+				case TimeType.GameSystemTime:
+					_timeGameSystem.Resume();
+					break;
+				case TimeType.ObjectTime:
+					_timeObject.Resume();
+					break;
+			}
 		}
 
 		IEnumerator HitStopCoroutine(float stopTime, UnityAction onResumed)

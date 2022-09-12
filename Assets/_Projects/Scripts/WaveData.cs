@@ -11,8 +11,11 @@ namespace OneWeekGamejam.Charge
         {
             Ufo = 0,
         }
+
         [SerializeField] public EnemyType GenerateType;
         [SerializeField] public float Speed = 10;
+        [SerializeField] public float AngleSmoothTime = 90.0f;
         [SerializeField] public int MaxEnemyNum = 5;
+        [SerializeField] public Color EnemyColor = Color.white;
     }
 }

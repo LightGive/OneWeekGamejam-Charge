@@ -20,11 +20,11 @@ namespace OneWeekGamejam.Charge
 		{
 			base.OnInit();
 			_buttonStart.onClick.AddListener(OnButtonDownStart);
-
-			_sliderVolumeBGM.value = 0.5f;
-			_sliderVolumeSE.value = 0.5f;
-			OnValueChangedBGMVolume(0.5f);
-			OnValueChangedSEVolume(0.5f);
+			var startVolume = 0.2f;
+			_sliderVolumeBGM.value = startVolume;
+			_sliderVolumeSE.value = startVolume;
+			OnValueChangedBGMVolume(startVolume);
+			OnValueChangedSEVolume(startVolume);
 			_sliderVolumeBGM.onValueChanged.AddListener(OnValueChangedBGMVolume);
 			_sliderVolumeSE.onValueChanged.AddListener(OnValueChangedSEVolume);
 		}
@@ -45,6 +45,7 @@ namespace OneWeekGamejam.Charge
 		{
 			if (!_canGameStart) { return; }
 			_canGameStart = false;
+			SEManager.Instance.Play(SEPath.START_GAME); 
 			Hide();
 			_sceneMain.GameStart();
 		}
