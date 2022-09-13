@@ -10,7 +10,9 @@ namespace OneWeekGamejam.Charge
     public class UITitle : UINodeAnimation
     {
         [SerializeField] Button _buttonStart = null;
+		[SerializeField] Button _buttonOperation = null;
 		[SerializeField] SceneMain _sceneMain = null;
+		[SerializeField] UIOperation _UIOperation = null;
 		[SerializeField] Slider _sliderVolumeBGM = null;
 		[SerializeField] Slider _sliderVolumeSE = null;
 		[SerializeField] Player _player = null;
@@ -20,13 +22,14 @@ namespace OneWeekGamejam.Charge
 		{
 			base.OnInit();
 			_buttonStart.onClick.AddListener(OnButtonDownStart);
-
-			_sliderVolumeBGM.value = 0.5f;
-			_sliderVolumeSE.value = 0.5f;
-			OnValueChangedBGMVolume(0.5f);
-			OnValueChangedSEVolume(0.5f);
+			var startVolume = 0.2f;
+			_sliderVolumeBGM.value = startVolume;
+			_sliderVolumeSE.value = startVolume;
+			OnValueChangedBGMVolume(startVolume);
+			OnValueChangedSEVolume(startVolume);
 			_sliderVolumeBGM.onValueChanged.AddListener(OnValueChangedBGMVolume);
 			_sliderVolumeSE.onValueChanged.AddListener(OnValueChangedSEVolume);
+			_buttonOperation.onClick.AddListener(OnButtonDownOperation);
 		}
 
 		protected override void OnShowBefore()
@@ -45,8 +48,14 @@ namespace OneWeekGamejam.Charge
 		{
 			if (!_canGameStart) { return; }
 			_canGameStart = false;
+			SEManager.Instance.Play(SEPath.START_GAME); 
 			Hide();
 			_sceneMain.GameStart();
+		}
+
+		void OnButtonDownOperation()
+		{
+			_UIOperation.Show();
 		}
 
 		void OnValueChangedBGMVolume(float val)

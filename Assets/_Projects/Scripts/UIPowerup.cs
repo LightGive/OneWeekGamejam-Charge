@@ -28,6 +28,12 @@ namespace OneWeekGamejam.Charge
 			_buttonNotPowerup.onClick.AddListener(OnButtonDownNotPowerup);
 		}
 
+		protected override void OnShowBefore()
+		{
+			base.OnShowBefore();
+			SEManager.Instance.Play(SEPath.LEVELUP);
+		}
+
 		protected override void OnHideBefore()
 		{
 			base.OnHideBefore();
@@ -39,7 +45,7 @@ namespace OneWeekGamejam.Charge
 
 		void OnLevelUped(int upLevel)
 		{
-			GameSystem.Instance.Pause();
+			GameSystem.Instance.Pause(GameSystem.TimeType.GameSystemTime);
 			Show();
 			_powerupCnt = upLevel;
 			SetButton();
@@ -73,7 +79,7 @@ namespace OneWeekGamejam.Charge
 			{
 				Hide(onHideAfter: () =>
 				 {
-					 GameSystem.Instance.Resume();
+					 GameSystem.Instance.Resume(GameSystem.TimeType.GameSystemTime);
 				 });
 				return;
 			}
@@ -85,7 +91,7 @@ namespace OneWeekGamejam.Charge
 			SEManager.Instance.Play(SEPath.CANCEL);
 			Hide(onHideAfter: () =>
 			{
-				GameSystem.Instance.Resume();
+				GameSystem.Instance.Resume(GameSystem.TimeType.GameSystemTime);
 			});
 		}
 	}

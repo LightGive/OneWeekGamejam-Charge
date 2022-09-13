@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: WaveData1
   m_EditorClassIdentifier: 
   GenerateType: 0
-  Speed: 25
-  MaxEnemyNum: 8
+  Speed: 18
+  AngleSmoothTime: 1
+  MaxEnemyNum: 10
