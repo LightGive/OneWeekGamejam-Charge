@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using KanKikuchi.AudioManager;
 using UnityEngine;
 
 namespace OneWeekGamejam.Charge
@@ -22,7 +23,7 @@ namespace OneWeekGamejam.Charge
         float _generateTimeCnt = 0.0f;
         float _waveTimeCnt  = 0.0f;
         int _waveCnt = 0;
-
+        public bool IsCurrentBossWave =>(_waveCnt+1) % 5 == 0;
         public bool IsStartGenerate { get; private set; } = false;
 
         void Awake()
@@ -33,8 +34,9 @@ namespace OneWeekGamejam.Charge
         void Update()
         {
             if (!IsStartGenerate) { return; }
-            CheckGenerate();
+            CheckDespone();
             CheckWave();
+            CheckGenerate();
         }
 
         public void ClearGenerateEnemy()
@@ -62,22 +64,33 @@ namespace OneWeekGamejam.Charge
             IsStartGenerate = false;
 		}
 
-        void CheckGenerate()
+        void CheckDespone()
 		{
-            _generateTimeCnt += GameSystem.ObjectDeltaTime;
-            if (_generateTimeCnt > _generateInterval)
+            for (var i = _activeEnemyList.Count - 1; i >= 0; i--)
             {
-                Generate();
+                var target = _activeEnemyList[i];
+                if (_mainCamera.IsScreenOut(target.transform.position, 50))
+                {
+                    target.Clear();
+                }
             }
+        }
+
+        void CheckGenerate()
+        {
+            _generateTimeCnt += GameSystem.ObjectDeltaTime;
+            if (IsCurrentBossWave) { return; }
+            if (_generateTimeCnt <= _generateInterval ||
+                _activeEnemyList.Count >= _currentWave.MaxEnemyNum) { return; }
+            Generate();
         }
 
 		void Generate()
         {
-            if (_activeEnemyList.Count >= _currentWave.MaxEnemyNum) { return; }
             var enemyType = (int)_currentWave.GenerateType;
             var e = _enemyPools[enemyType].Pool.Get();
             var p = _mainCamera.GetRandomPositionScreenOut(10.0f);
-            e.Generate(p, _player,_currentWave.Speed);
+            e.Generate(p, _player, _currentWave.Speed, _currentWave.AngleSmoothTime, _currentWave.EnemyColor);
             _activeEnemyList.Add(e);
             _generateTimeCnt = 0.0f;
 
@@ -92,15 +105,32 @@ namespace OneWeekGamejam.Charge
 
         void CheckWave()
         {
+            Debug.Log(IsCurrentBossWave);
             _waveTimeCnt += GameSystem.ObjectDeltaTime;
-            if (_waveTimeCnt <= _oneWaveTime) { return; }
-            if((_waveCnt +1) >= _waveData.Length) { return; }
+            if ((!IsCurrentBossWave && _waveTimeCnt <= _oneWaveTime )|| 
+                (IsCurrentBossWave && _activeEnemyList.Count != 0 )) { return; }
+
+            // WaveMaxCheck
+            if((_waveCnt + 1) >= _waveData.Length) { return; }
 
             _waveTimeCnt = 0.0f;
             _waveCnt++;
             var idx = Mathf.Clamp(_waveCnt, 0, _waveData.Length - 1);
             _currentWave = _waveData[idx];
             _UIWave.SetWave(_waveCnt + 1);
+
+            if (IsCurrentBossWave)
+            {
+                BGMSwitcher.CrossFade(BGMPath.BOSS, 0.5f);
+                for(var i = 0; i < _currentWave.MaxEnemyNum; i++)
+				{
+                    Generate();
+				}
+            }
+            else if ((_waveCnt + 1) % 5 == 1)
+            {
+                BGMSwitcher.CrossFade(BGMPath.MAIN1, 0.5f);
+            }
         }
 
         void EnemyReleaseEvent(Enemy e, EnemyPool pool)

@@ -18,11 +18,11 @@ namespace OneWeekGamejam.Charge
 
 		[SerializeField] UIMain _UIMain = null;
 		[SerializeField] ScoreProduction _scoreProduction = null;
-		int _currentScore = 0;
+		public int CurrentScore { get; private set; } = 0;
 
 		public void Init()
 		{
-			_currentScore = 0;
+			CurrentScore = 0;
 			_UIMain.SetScore(0);
 		}
 
@@ -30,8 +30,8 @@ namespace OneWeekGamejam.Charge
 		{
 			var count = Mathf.Clamp(hitCount - 1, 0, ComboScores.Length - 1);
 			var addScore = ComboScores[count];
-			_currentScore += addScore;
-			_UIMain.SetScore(_currentScore);
+			CurrentScore += addScore;
+			_UIMain.SetScore(CurrentScore);
 			_scoreProduction.Popup(addScore, pos);
 		}
 	}

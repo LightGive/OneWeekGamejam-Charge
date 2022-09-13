@@ -200,6 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigid: {fileID: 4246715117701138691}
   _spriteFlusher: {fileID: 2654096661931292323}
+  _spriteRenderer: {fileID: 4246715116621001448}
   _angleSmoothTime: 1
   _angleMaxSpeed: 90
   _speed: 20

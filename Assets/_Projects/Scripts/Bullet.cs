@@ -26,13 +26,21 @@ namespace OneWeekGamejam.Charge
 
         void OnTriggerEnter2D(Collider2D col)
         {
-            if (col.tag != TagName.Enemy) { return; }
-            if (!col.gameObject.TryGetComponent(out EnemyCollider result))
+            switch (col.tag)
             {
-                Debug.LogError("EnemyのタグでEnemyColliderがアタッチされていない");
+                case TagName.Enemy:
+                    if (!col.gameObject.TryGetComponent(out EnemyCollider result))
+                    {
+                        Debug.LogError("EnemyのタグでEnemyColliderがアタッチされていない");
+                    }
+                    result.Hit(transform.up);
+                    HitEnemy();
+                    break;
+                case TagName.Stage:
+                    HitStage();
+                    break;
+                default:return;
             }
-            result.Hit(transform.up);
-            Hit();
         }
 
         public void Generate(float speed, float angle, Vector3 pos)
@@ -43,7 +51,7 @@ namespace OneWeekGamejam.Charge
             _addScore = 0;
         }
 
-        public void Hit()
+        void HitEnemy()
 		{
             _addScore++;
             OnHited?.Invoke(_addScore);
@@ -52,6 +60,12 @@ namespace OneWeekGamejam.Charge
                 OnHitDestroy?.Invoke();
 			}
 		}
+
+        void HitStage()
+		{
+            OnHitDestroy?.Invoke();
+
+        }
 
         public void Clear()
         {
