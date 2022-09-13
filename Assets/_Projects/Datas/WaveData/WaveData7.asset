@@ -15,5 +15,5 @@ MonoBehaviour:
   GenerateType: 0
   Speed: 20
   AngleSmoothTime: 0.1
-  MaxEnemyNum: 15
+  MaxEnemyNum: 10
   EnemyColor: {r: 1, g: 1, b: 1, a: 1}

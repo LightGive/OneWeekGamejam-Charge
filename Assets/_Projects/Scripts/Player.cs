@@ -182,6 +182,9 @@ namespace OneWeekGamejam.Charge
 			_collider.enabled = true;
 			_canMove = true;
 			_rigid.bodyType = RigidbodyType2D.Dynamic;
+			transform.localRotation = Quaternion.identity;
+			_smoothAngle.current = 0.0f;
+			_smoothAngle.target = 0.0f;
 		}
 
 		void Aim()

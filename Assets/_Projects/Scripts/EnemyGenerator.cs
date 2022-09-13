@@ -23,7 +23,7 @@ namespace OneWeekGamejam.Charge
         float _generateTimeCnt = 0.0f;
         float _waveTimeCnt  = 0.0f;
         int _waveCnt = 0;
-
+        public bool IsCurrentBossWave =>(_waveCnt+1) % 5 == 0;
         public bool IsStartGenerate { get; private set; } = false;
 
         void Awake()
@@ -77,17 +77,16 @@ namespace OneWeekGamejam.Charge
         }
 
         void CheckGenerate()
-		{
+        {
             _generateTimeCnt += GameSystem.ObjectDeltaTime;
-            if (_generateTimeCnt > _generateInterval)
-            {
-                Generate();
-            }
+            if (IsCurrentBossWave) { return; }
+            if (_generateTimeCnt <= _generateInterval ||
+                _activeEnemyList.Count >= _currentWave.MaxEnemyNum) { return; }
+            Generate();
         }
 
 		void Generate()
         {
-            if (_activeEnemyList.Count >= _currentWave.MaxEnemyNum) { return; }
             var enemyType = (int)_currentWave.GenerateType;
             var e = _enemyPools[enemyType].Pool.Get();
             var p = _mainCamera.GetRandomPositionScreenOut(10.0f);
@@ -106,9 +105,13 @@ namespace OneWeekGamejam.Charge
 
         void CheckWave()
         {
+            Debug.Log(IsCurrentBossWave);
             _waveTimeCnt += GameSystem.ObjectDeltaTime;
-            if (_waveTimeCnt <= _oneWaveTime) { return; }
-            if((_waveCnt +1) >= _waveData.Length) { return; }
+            if ((!IsCurrentBossWave && _waveTimeCnt <= _oneWaveTime )|| 
+                (IsCurrentBossWave && _activeEnemyList.Count != 0 )) { return; }
+
+            // WaveMaxCheck
+            if((_waveCnt + 1) >= _waveData.Length) { return; }
 
             _waveTimeCnt = 0.0f;
             _waveCnt++;
@@ -116,11 +119,15 @@ namespace OneWeekGamejam.Charge
             _currentWave = _waveData[idx];
             _UIWave.SetWave(_waveCnt + 1);
 
-            if (_waveCnt % 4 == 0)
+            if (IsCurrentBossWave)
             {
                 BGMSwitcher.CrossFade(BGMPath.BOSS, 0.5f);
+                for(var i = 0; i < _currentWave.MaxEnemyNum; i++)
+				{
+                    Generate();
+				}
             }
-            else if (_waveCnt % 4 == 1 && _waveCnt != 1)
+            else if ((_waveCnt + 1) % 5 == 1)
             {
                 BGMSwitcher.CrossFade(BGMPath.MAIN1, 0.5f);
             }

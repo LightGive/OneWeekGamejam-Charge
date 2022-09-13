@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WaveData4
   m_EditorClassIdentifier: 
   GenerateType: 0
-  Speed: 150
-  AngleSmoothTime: 1
+  Speed: 130
+  AngleSmoothTime: 1.4
   MaxEnemyNum: 2
   EnemyColor: {r: 0.5613208, g: 0.7213097, b: 1, a: 1}

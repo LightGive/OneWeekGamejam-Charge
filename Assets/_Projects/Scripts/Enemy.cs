@@ -59,9 +59,8 @@ namespace OneWeekGamejam.Charge
             _target = player.transform;
             _angleSmoothTime = angleSmoothTime;
             _speed = speed;
-            _angleCurrent = GetTargetAngleRad();
             transform.position = generatePos;
-            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+            _angleCurrent = GetTargetAngleRad();
             _spriteFlusher.ResetFlush();
             _spriteRenderer.color = enemyColor;
         }
